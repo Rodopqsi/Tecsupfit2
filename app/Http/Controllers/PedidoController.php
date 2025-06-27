@@ -15,7 +15,7 @@ class PedidoController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('pedidos.usuario.index', compact('ordenes'));
+        return view('pedidos.usuario', compact('ordenes'));
     }
 
     public function indexAdmin(Request $request)

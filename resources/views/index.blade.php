@@ -21,7 +21,7 @@
     @if(auth()->user()->is_admin)
         <div class="sticky top-4 z-50">
             <a href="{{ route('productos.index') }}"
-               class="inline-block bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-red-700 transition" style="z-index:5000; position:absolute; right:10px;">
+                class="inline-block bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-red-700 transition" style="z-index:5000; position:absolute; right:10px;">
                 Panel administrativo
             </a>
         </div>
