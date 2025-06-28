@@ -24,7 +24,7 @@
       </p>
     </div>
     <div class="imagen-header">
-      <img src="{{ asset('imagenes/ImagenHeader/Imagen16.jpg') }}">
+      <img src="{{ asset('imagenes/ImagenHeader/Imagen16-2.png') }}">
     </div>
   </section>
 
@@ -70,10 +70,6 @@
           50 % de descuento en compras mayores a 200 soles y llévate una barrita gratis en la segunda compra
         </div>
       
-        <div>
-    @component('components.footer')
-    @endcomponent
-</div>
 <!-- Chatbot flotante -->
     <style>
         #chatbot-float-btn {

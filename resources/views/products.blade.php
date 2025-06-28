@@ -132,10 +132,7 @@
 </div>
 
 </div>
-<div>
-    @component('components.footer')
-    @endcomponent
-</div>
+
 <!-- Chatbot flotante -->
     <style>
         #chatbot-float-btn {

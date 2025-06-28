@@ -132,3 +132,7 @@ Route::delete('/reclamaciones/{reclamacion}', [ReclamacionController::class, 'de
 
 Route::post('/productos/{producto}/opiniones', [OpinionController::class, 'store'])->name('opiniones.store');
 Route::post('/carrito/aplicar-cupon', [App\Http\Controllers\CarritoController::class, 'aplicarCupon'])->name('carrito.aplicar-cupon');
+
+Route::middleware(['auth', 'admin'])->resource('cupones', CuponController::class);
+Route::middleware('auth')->get('/cupones-disponibles', [CuponController::class, 'verCupones'])->name('cupones.ver');
+Route::middleware('auth')->post('/aplicar-cupon', [CarritoController::class, 'aplicarCupon'])->name('carrito.aplicar-cupon');

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Cupon;
 use Illuminate\Http\Request;
 use App\Models\CarritoProducto;
 use Illuminate\Support\Facades\Auth;
@@ -101,23 +101,34 @@ use App\Models\Producto;
     }
 
     public function aplicarCupon(Request $request)
-{
-    $cupon = strtoupper($request->input('cupon'));
-    $carrito = session()->get('carrito', []);
-    $descuentoTotal = 0;
+    {
+        $codigo = strtoupper($request->input('cupon'));
+        $cupon = Cupon::where('codigo', $codigo)->first();
+        $carrito = session()->get('carrito', []);
+        $total = array_sum(array_map(fn($item) => $item['precio'] * $item['cantidad'], $carrito));
 
-    if ($cupon === 'TECSUPFIT') {
-        foreach ($carrito as $id => $item) {
-            $descuentoTotal += 5 * $item['cantidad'];
+        if (!$cupon || $cupon->stock <= 0 || now()->lt($cupon->fecha_inicio) || now()->gt($cupon->fecha_fin)) {
+            return redirect()->route('checkout')->with('error', 'Cupón inválido o vencido.');
         }
+
+        if ($cupon->user_id && $cupon->user_id !== Auth::id()) {
+            return redirect()->route('checkout')->with('error', 'Cupón no autorizado para tu cuenta.');
+        }
+
+        if ($cupon->precio_minimo && $total < $cupon->precio_minimo) {
+            return redirect()->route('checkout')->with('error', 'No alcanzas el mínimo de compra para este cupón.');
+        }
+
+        // Lógica del descuento (puedes ampliar según tipo)
+        $descuentoTotal = $cupon->descuento;
+
         session([
-            'cupon_codigo' => $cupon,
-            'descuento' => $descuentoTotal
+            'cupon_codigo' => $codigo,
+            'descuento' => $descuentoTotal,
+            'cupon_id' => $cupon->id
         ]);
 
         return redirect()->route('checkout')->with('success', 'Cupón aplicado correctamente.');
-    } else {
-        session()->forget(['cupon_codigo', 'descuento']);
-        return redirect()->route('checkout')->with('error', 'Cupón inválido.');}
-}
+    }
+
 }

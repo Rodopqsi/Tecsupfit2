@@ -20,7 +20,7 @@ class PagoController extends Controller
         }, $carrito));
 
         $descuento = session('descuento', 0);
-        $totalConDescuento = max($total - $descuento, 0); // evita negativos
+        $totalConDescuento = max($total - $descuento, 0); 
 
         return view('checkout', [
             'carrito' => $carrito,
@@ -31,12 +31,13 @@ class PagoController extends Controller
     }
 
     public function procesarPago(Request $request)
-    {
-        $carrito = session()->get('carrito', []);
-        if (empty($carrito)) {
-            return redirect()->route('checkout')->with('error', 'Tu carrito está vacío.');
-        }
+{
+    $carrito = session()->get('carrito', []);
+    if (empty($carrito)) {
+        return redirect()->route('checkout')->with('error', 'Tu carrito está vacío.');
+    }
 
+    try {
         $total = array_sum(array_map(function ($item) {
             return $item['precio'] * $item['cantidad'];
         }, $carrito));
@@ -51,15 +52,22 @@ class PagoController extends Controller
         // Guardar la orden
         $orden = Orden::create([
             'user_id' => $user_id,
-            'nombre' => $nombre,
-            'email' => $email,
-            'total' => $totalConDescuento,
-            'estado' => 'En proceso',
-            'direccion' => $request->input('direccion') ?? '',
-            'telefono' => $request->input('telefono') ?? '',
+            'nombre' => $request->nombre,
+            'apellidos' => $request->apellidos,
+            'dni' => $request->dni,
+            'region' => $request->region,
+            'distrito' => $request->distrito,
+            'direccion' => $request->direccion,
+            'departamento' => $request->departamento,
+            'telefono' => $request->telefono,
+            'email' => $request->email,
+            'notas' => $request->notas,
+            'monto_total' => $totalConDescuento,
+            'estado_pago' => 'Pagado',
+            'paypal_order_id' => $request->input('paypal_order_id'),
         ]);
 
-        // Guardar productos de la orden
+        // Guardar productos
         foreach ($carrito as $productoId => $item) {
             OrdenProducto::create([
                 'orden_id' => $orden->id,
@@ -69,24 +77,51 @@ class PagoController extends Controller
             ]);
         }
 
-        // Enviar correo de confirmación
+        // Enviar correo
         if ($email) {
             Mail::to($email)->send(new ConfirmacionPedido([
                 'nombre' => $nombre,
+                'numero_orden' => $orden->id,
+                'fecha' => now()->format('d/m/Y H:i'),
                 'total' => $totalConDescuento,
-                'productos' => $carrito,
+                'productos' => $carrito
             ]));
         }
 
-        // Limpiar la sesión
+        // ✅ Pasar resumen del pedido a la vista de gracias
+        session()->put('resumen_pedido', [
+            'numero_orden' => $orden->id,
+            'fecha' => $orden->created_at->format('d/m/Y H:i'),
+            'productos' => array_map(function ($item) {
+                return [
+                    'nombre' => $item['nombre'],
+                    'cantidad' => $item['cantidad'],
+                    'precio' => $item['precio']
+                ];
+            }, $carrito),
+            'total' => $totalConDescuento
+        ]);
+
+        // Limpiar sesión
         session()->forget(['carrito', 'descuento']);
 
-        // Puedes devolver una redirección o una respuesta JSON según contexto
         if ($request->wantsJson()) {
-            \Log::info('Pago recibido (API):', $request->all());
             return response()->json(['success' => true, 'mensaje' => 'Pago registrado.']);
         }
 
         return redirect()->route('gracias');
+
+    } catch (\Exception $e) {
+        \Log::error('Error al guardar el pedido: ' . $e->getMessage());
+        if ($request->ajax() || $request->wantsJson()) {
+    return response()->json([
+        'success' => true,
+        'redirect_url' => route('gracias')
+    ]);
+}
+
+        return redirect()->route('checkout')->with('error', 'Ocurrió un error al guardar el pedido.');
     }
+}
+
 }

@@ -13,9 +13,7 @@
   @endcomponent
 </header>
 
-<!-- CONTENEDOR FLEX -->
 <div style="display:flex; padding:5rem; justify-content:center; gap:5rem; flex-wrap:wrap;">
-
   <!-- FORMULARIO DE FACTURACIÓN -->
   <div>
     <h2 class="text-xl font-bold mb-4">Detalles de facturación</h2>
@@ -24,11 +22,11 @@
     <form action="{{ route('carrito.aplicar-cupon') }}" method="POST" class="mb-4">
       @csrf
       <label class="block mb-2 font-bold">¿Tienes un cupón?</label>
-      <input type="text" name="cupon" class="border p-2 rounded w-1/2" placeholder="Ingresa tu cupón">
+      <input type="text" name="cupon" class="border p-2 rounded w-1/2" placeholder="Ingresa tu cupón" required>
       <button type="submit" class="ml-2 bg-blue-600 text-white px-4 py-2 rounded">Aplicar cupón</button>
     </form>
 
-    <!-- Formulario de datos del cliente (para PayPal) -->
+    <!-- Formulario de datos del cliente -->
     <form id="formulario-pago" class="space-y-4" method="POST">
       @csrf
       <section class="max-w-xl p-6 rounded shadow space-y-4 bg-gray-100">
@@ -80,13 +78,14 @@
         <input type="email" name="email" placeholder="Correo electrónico" class="border w-full p-2">
         <textarea name="notas" class="border w-full p-2" placeholder="Notas del pedido (opcional)"></textarea>
 
+        <input type="hidden" name="monto_total" value="{{ $totalConDescuento }}">
+        <input type="hidden" name="estado_pago" value="Pagado">
       </section>
     </form>
   </div>
 
   <!-- RESUMEN DE PEDIDO -->
   <div>
-    
     <h2 class="text-xl font-bold mb-4">Su pedido</h2>
     <div class="border p-4 space-y-4">
       @if(session('success'))
@@ -117,7 +116,7 @@
           <label><input type="radio" name="envio" checked> Olva (S/15.00)</label><br>
           <label><input type="radio" name="envio"> Shalom (Pago en destino)</label>
         </div>
-          
+
         <div class="flex justify-between border-t pt-2 mt-2">
           <span class="font-bold text-lg">Total a pagar</span>
           <span class="text-red-600 font-bold text-lg">S/ {{ number_format($totalConDescuento, 2) }}</span>
@@ -126,57 +125,53 @@
     </div>
 
     <!-- PayPal Button -->
-    <div class="mt-6" id="paypal-button-container"></div>
+   <!-- PayPal Button -->
+<div class="mt-6" id="paypal-button-container"></div>
 
-    <script src="https://www.paypal.com/sdk/js?client-id=AUBcJCnp5qlm26Nx4UMFg5b_iGTKLHRcOdYVyEf485Gs0r4p91bFecfuOWdNur02cXi2HHXaN4OAAHAL&currency=USD"></script>
-    <script>
-    paypal.Buttons({
-      createOrder: function(data, actions) {
-        return actions.order.create({
-          purchase_units: [{
-            amount: {
-              value: "{{ number_format($totalConDescuento, 2, '.', '') }}"
-            }
-          }]
-        });
-      },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          const form = document.getElementById('formulario-pago');
-          const formData = new FormData(form);
+<script src="https://www.paypal.com/sdk/js?client-id=AUBcJCnp5qlm26Nx4UMFg5b_iGTKLHRcOdYVyEf485Gs0r4p91bFecfuOWdNur02cXi2HHXaN4OAAHAL&currency=USD"></script>
+<script>
+paypal.Buttons({
+  createOrder: function(data, actions) {
+    return actions.order.create({
+      purchase_units: [{
+        amount: {
+          value: "{{ number_format($totalConDescuento, 2, '.', '') }}"
+        }
+      }]
+    });
+  },
+  onApprove: function(data, actions) {
+    return actions.order.capture().then(function(details) {
+      const form = document.getElementById('formulario-pago');
+      const formData = new FormData(form);
 
-          fetch("{{ route('procesar.pago') }}", {
-            method: "POST",
-            headers: {
-              'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: formData
-          })
-          .then(response => {
-            if (response.redirected) {
-              window.location.href = response.url;
-            } else {
-              return response.json();
-            }
-          })
-          .then(data => {
-            if (data?.success) {
-              alert("Gracias por tu compra, " + details.payer.name.given_name + "!");
-            }
-          })
-          .catch(error => {
-            console.error("Error al procesar el pago:", error);
-            alert("Ocurrió un error al guardar el pedido.");
-          });
-        });
-      }
-    }).render('#paypal-button-container');
-    </script>
+      fetch("{{ route('procesar.pago') }}", {
+        method: "POST",
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && data.redirect_url) {
+          window.location.href = data.redirect_url;
+        } else {
+          alert("Ocurrió un error al procesar el pedido.");
+        }
+      })
+      .catch(error => {
+        console.error("Error al procesar el pago:", error);
+        alert("Ocurrió un error al guardar el pedido.");
+      });
+    });
+  }
+}).render('#paypal-button-container');
+</script>
+
   </div>
+</div>
 
-</div> <!-- FIN CONTENEDOR -->
-
-<!-- FOOTER -->
 <footer class="mt-12">
   @include('components.footer')
 </footer>

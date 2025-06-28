@@ -6,11 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Orden extends Model
 {
-    protected $table = 'ordenes'; // Especificamos la tabla (por si acaso)
+    protected $table = 'ordenes';
 
     protected $fillable = [
-        'nombre', 'apellidos', 'dni', 'region', 'distrito', 'direccion',
-        'departamento', 'telefono', 'email', 'notas', 'total'
+        'user_id',
+        'nombre',
+        'apellidos',
+        'dni',
+        'region',
+        'distrito',
+        'direccion',
+        'departamento',
+        'telefono',
+        'email',
+        'notas',
+        'monto_total',
+        'estado_pago',
+        'paypal_order_id',
     ];
 
     public function productos()
