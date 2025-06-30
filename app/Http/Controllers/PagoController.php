@@ -8,19 +8,37 @@ use App\Models\Orden;
 use App\Models\OrdenProducto;
 use App\Mail\ConfirmacionPedido;
 use Illuminate\Support\Facades\Auth;
+use App\Models\CarritoProducto;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Cupon;
 
 class PagoController extends Controller
 {
     public function checkout()
     {
-        $carrito = session()->get('carrito', []);
-        $total = array_sum(array_map(function ($item) {
-            return $item['precio'] * $item['cantidad'];
-        }, $carrito));
+        if (auth()->check()) {
+            $carritoDB = CarritoProducto::with('producto')
+                ->where('user_id', auth()->id())
+                ->get();
 
-        $descuento = session('descuento', 0);
-        $totalConDescuento = max($total - $descuento, 0); 
+            $carrito = [];
+            foreach ($carritoDB as $item) {
+                $carrito[$item->producto->id] = [
+                    'nombre' => $item->producto->nombre,
+                    'precio' => $item->producto->precio_nuevo,
+                    'cantidad' => $item->cantidad,
+                ];
+            }
+        } else {
+            $carrito = session()->get('carrito', []);
+        }
+
+        $total = array_sum(array_map(fn($item) => $item['precio'] * $item['cantidad'], $carrito));
+        $cupones = session('cupones', []);
+        $descuento = array_sum(array_column($cupones, 'descuento'));
+        $totalConDescuento = max($total - $descuento, 0);
+
+
 
         return view('checkout', [
             'carrito' => $carrito,
@@ -31,97 +49,119 @@ class PagoController extends Controller
     }
 
     public function procesarPago(Request $request)
-{
-    $carrito = session()->get('carrito', []);
-    if (empty($carrito)) {
-        return redirect()->route('checkout')->with('error', 'Tu carrito está vacío.');
-    }
+    {
+        if (Auth::check()) {
+            $carritoDB = CarritoProducto::with('producto')
+                ->where('user_id', auth()->id())
+                ->get();
 
-    try {
-        $total = array_sum(array_map(function ($item) {
-            return $item['precio'] * $item['cantidad'];
-        }, $carrito));
+            if ($carritoDB->isEmpty()) {
+                return redirect()->route('checkout')->with('error', 'Tu carrito está vacío.');
+            }
 
-        $descuento = session('descuento', 0);
-        $totalConDescuento = max($total - $descuento, 0);
+            $carrito = [];
+            foreach ($carritoDB as $item) {
+                $carrito[$item->producto->id] = [
+                    'nombre' => $item->producto->nombre,
+                    'precio' => $item->producto->precio_nuevo,
+                    'cantidad' => $item->cantidad,
+                ];
+            }
+        } else {
+            $carrito = session()->get('carrito', []);
+            if (empty($carrito)) {
+                return redirect()->route('checkout')->with('error', 'Tu carrito está vacío.');
+            }
+        }
 
-        $email = $request->input('email');
-        $nombre = $request->input('nombre');
-        $user_id = Auth::check() ? Auth::id() : null;
+        try {
+            $total = array_sum(array_map(fn($item) => $item['precio'] * $item['cantidad'], $carrito));
+            $cupones = session('cupones', []);
+            $descuento = array_sum(array_column($cupones, 'descuento'));
+            $totalConDescuento = max($total - $descuento, 0);
 
-        // Guardar la orden
-        $orden = Orden::create([
-            'user_id' => $user_id,
-            'nombre' => $request->nombre,
-            'apellidos' => $request->apellidos,
-            'dni' => $request->dni,
-            'region' => $request->region,
-            'distrito' => $request->distrito,
-            'direccion' => $request->direccion,
-            'departamento' => $request->departamento,
-            'telefono' => $request->telefono,
-            'email' => $request->email,
-            'notas' => $request->notas,
-            'monto_total' => $totalConDescuento,
-            'estado_pago' => 'Pagado',
-            'paypal_order_id' => $request->input('paypal_order_id'),
-        ]);
 
-        // Guardar productos
-        foreach ($carrito as $productoId => $item) {
-            OrdenProducto::create([
-                'orden_id' => $orden->id,
-                'producto_id' => $productoId,
-                'cantidad' => $item['cantidad'],
-                'precio_unitario' => $item['precio'],
+            $user_id = Auth::check() ? Auth::id() : null;
+            $email = $request->input('email');
+            $nombre = $request->input('nombre');
+
+            $orden = Orden::create([
+                'user_id' => $user_id,
+                'nombre' => $request->nombre,
+                'apellidos' => $request->apellidos,
+                'dni' => $request->dni,
+                'region' => $request->region,
+                'distrito' => $request->distrito,
+                'direccion' => $request->direccion,
+                'departamento' => $request->departamento,
+                'telefono' => $request->telefono,
+                'email' => $request->email,
+                'notas' => $request->notas,
+                'monto_total' => $totalConDescuento,
+                'estado_pago' => 'Pagado',
+                'paypal_order_id' => $request->input('paypal_order_id'),
             ]);
-        }
 
-        // Enviar correo
-        if ($email) {
-            Mail::to($email)->send(new ConfirmacionPedido([
-                'nombre' => $nombre,
+            foreach ($carrito as $productoId => $item) {
+                OrdenProducto::create([
+                    'orden_id' => $orden->id,
+                    'producto_id' => $productoId,
+                    'cantidad' => $item['cantidad'],
+                    'precio_unitario' => $item['precio'],
+                ]);
+            }
+
+            if ($email) {
+                Mail::to($email)->send(new ConfirmacionPedido([
+                    'nombre' => $nombre,
+                    'numero_orden' => $orden->id,
+                    'fecha' => now()->format('d/m/Y H:i'),
+                    'total' => $totalConDescuento,
+                    'productos' => $carrito
+                ]));
+            }
+
+            // Descontar stock del cupón si se aplicó
+            if (session()->has('cupon_id')) {
+                $cupon = Cupon::find(session('cupon_id'));
+                if ($cupon && $cupon->stock > 0) {
+                    $cupon->decrement('stock');
+                }
+            }
+
+            // Guardar resumen de pedido
+            session()->put('resumen_pedido', [
                 'numero_orden' => $orden->id,
-                'fecha' => now()->format('d/m/Y H:i'),
-                'total' => $totalConDescuento,
-                'productos' => $carrito
-            ]));
-        }
-
-        // ✅ Pasar resumen del pedido a la vista de gracias
-        session()->put('resumen_pedido', [
-            'numero_orden' => $orden->id,
-            'fecha' => $orden->created_at->format('d/m/Y H:i'),
-            'productos' => array_map(function ($item) {
-                return [
+                'fecha' => $orden->created_at->format('d/m/Y H:i'),
+                'productos' => array_map(fn($item) => [
                     'nombre' => $item['nombre'],
                     'cantidad' => $item['cantidad'],
                     'precio' => $item['precio']
-                ];
-            }, $carrito),
-            'total' => $totalConDescuento
-        ]);
+                ], $carrito),
+                'total' => $totalConDescuento
+            ]);
 
-        // Limpiar sesión
-        session()->forget(['carrito', 'descuento']);
+        
+            session()->forget(['carrito', 'descuento', 'cupon_codigo', 'cupon_id']);
 
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true, 'mensaje' => 'Pago registrado.']);
-        }
+            if ($request->wantsJson()) {
+                return response()->json(['success' => true, 'redirect_url' => route('gracias')]);
+            }
 
-        return redirect()->route('gracias');
+            return redirect()->route('gracias');
 
-    } catch (\Exception $e) {
-        \Log::error('Error al guardar el pedido: ' . $e->getMessage());
-        if ($request->ajax() || $request->wantsJson()) {
-    return response()->json([
-        'success' => true,
-        'redirect_url' => route('gracias')
-    ]);
-}
+        } catch (\Exception $e) {
+                \Log::error('Error al guardar el pedido: ' . $e->getMessage());
+                    
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Error al guardar el pedido'
+                    ]);
+                }
+            
+                return redirect()->route('checkout')->with('error', 'Ocurrió un error al guardar el pedido.');
+            }
 
-        return redirect()->route('checkout')->with('error', 'Ocurrió un error al guardar el pedido.');
     }
-}
-
 }

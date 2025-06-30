@@ -68,28 +68,37 @@
             <div class="iconos">
                 <a href="{{ Auth::check() ? '/dashboard' : '/login' }}" class="person flex items-center">
                     @auth
-                        <p style="width:200px; margin-left:-14rem;">{{ Auth::user()->name }}</p>
+                        <p class="nombre-usuario">{{ Auth::user()->name }}</p>
                     @endauth
                     <svg width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M19.5 19.5C23.0913 19.5 26 16.5913 26 13C26 9.40875 23.0913 6.5 19.5 6.5C15.9087 6.5 13 9.40875 13 13C13 16.5913 15.9087 19.5 19.5 19.5ZM19.5 22.75C15.1612 22.75 6.5 24.9275 6.5 29.25V32.5H32.5V29.25C32.5 24.9275 23.8388 22.75 19.5 22.75Z" fill="#FFFF"/>
                     </svg>
                 </a>
 
-                <a href="{{ route('carrito.mostrar') }}"class="carrito"><svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <a href="{{ route('carrito.mostrar') }}" class="carrito">
+                    <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20.0854 16.7917C21.0541 16.7917 21.9066 16.2621 22.3458 15.4613L26.97 7.07834C27.0788 6.88255 27.1347 6.66174 27.132 6.43774C27.1293 6.21374 27.0682 5.99433 26.9546 5.80122C26.8411 5.6081 26.6791 5.44797 26.4847 5.33668C26.2903 5.22538 26.0702 5.16678 25.8462 5.16667H6.72954L5.51538 2.58334H1.29163V5.16667H3.87496L8.52496 14.9704L6.78121 18.1221C5.83829 19.8529 7.07829 21.9583 9.04163 21.9583H24.5416V19.375H9.04163L10.4625 16.7917H20.0854ZM7.95663 7.75H23.6504L20.0854 14.2083H11.0179L7.95663 7.75ZM9.04163 23.25C7.62079 23.25 6.47121 24.4125 6.47121 25.8333C6.47121 27.2542 7.62079 28.4167 9.04163 28.4167C10.4625 28.4167 11.625 27.2542 11.625 25.8333C11.625 24.4125 10.4625 23.25 9.04163 23.25ZM21.9583 23.25C20.5375 23.25 19.3879 24.4125 19.3879 25.8333C19.3879 27.2542 20.5375 28.4167 21.9583 28.4167C23.3791 28.4167 24.5416 27.2542 24.5416 25.8333C24.5416 24.4125 23.3791 23.25 21.9583 23.25Z" fill="white"/>
                     </svg>
+
                     @php
+                        use App\Models\CarritoProducto;
+
                         $cantidadTotal = 0;
-                        if(session('carrito')) {
-                            foreach(session('carrito') as $item) {
+
+                        if (auth()->check()) {
+                            $cantidadTotal = CarritoProducto::where('user_id', auth()->id())->sum('cantidad');
+                        } elseif (session('carrito')) {
+                            foreach (session('carrito') as $item) {
                                 $cantidadTotal += $item['cantidad'];
                             }
                         }
                     @endphp
+                    
                     @if($cantidadTotal > 0)
                         <span class="contador-carrito">{{ $cantidadTotal }}</span>
                     @endif
-                    </a>
+                </a>
+
                 <a href="#footerr" class="atencion"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M19.8333 13.7725C19.8333 13.3688 19.8333 13.167 19.894 12.9873C20.0702 12.4647 20.5357 12.2628 21.0023 12.0505C21.525 11.8113 21.7863 11.6923 22.0465 11.6713C22.3405 11.648 22.6357 11.711 22.8877 11.8522C23.2213 12.0388 23.4547 12.3958 23.6927 12.6852C24.7928 14.0222 25.3435 14.6907 25.5442 15.4268C25.7075 16.0218 25.7075 16.6448 25.5442 17.2387C25.2513 18.3143 24.3238 19.215 23.6367 20.0503C23.2855 20.4762 23.1093 20.6897 22.8877 20.8145C22.6314 20.9567 22.3386 21.0196 22.0465 20.9953C21.7863 20.9743 21.525 20.8553 21.0012 20.6162C20.5345 20.4038 20.0702 20.202 19.894 19.6793C19.8333 19.4997 19.8333 19.2978 19.8333 18.8953V13.7725ZM8.16668 13.7725C8.16668 13.2638 8.15268 12.8077 7.74201 12.4507C7.59268 12.3212 7.39435 12.2313 6.99885 12.0505C6.47501 11.8125 6.21368 11.6923 5.95351 11.6713C5.17535 11.6083 4.75651 12.1403 4.30851 12.6863C3.20718 14.0222 2.65651 14.6907 2.45468 15.428C2.29229 16.021 2.29229 16.6468 2.45468 17.2398C2.74868 18.3143 3.67735 19.2162 4.36335 20.0503C4.79618 20.5753 5.21035 21.0548 5.95351 20.9953C6.21368 20.9743 6.47501 20.8553 6.99885 20.6162C7.39551 20.4365 7.59268 20.3455 7.74201 20.216C8.15268 19.859 8.16668 19.4028 8.16668 18.8953V13.7725Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M23.3333 12.25V10.5C23.3333 5.98967 19.1543 2.33334 14 2.33334C8.84563 2.33334 4.66663 5.98967 4.66663 10.5V12.25M23.3333 20.4167C23.3333 25.6667 18.6666 25.6667 14 25.6667" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -101,8 +110,18 @@
             
         </div>
     </section>
-
+@auth
+    @if(auth()->user()->is_admin)
+        <div class="fixed bottom-12 right-6 z-[5000]" style="margin-right:80px;">
+            <a href="{{ route('productos.index') }}"
+                class="bg-red-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-red-700 transition">
+                Panel administrativo
+            </a>
+        </div>
+    @endif
+@endauth
 <style>
+
     body{
         background-color: black;
     }
@@ -157,7 +176,7 @@
     justify-content: center;
     align-items: center;
     margin-top: 1.5rem;
-    margin-left: 1rem;
+
 }
 .contenedor-logo svg {
     mix-blend-mode: screen;
@@ -189,6 +208,7 @@
     flex-direction:column;
     align-items:center;
     width: 100%;
+    margin-right:-9rem;
     transition: all 0.3s ease;
 }
 .contenedor-central-navegacion {
@@ -220,8 +240,9 @@
     display: flex;
     list-style-type: none;
     width: 600px;
-    margin-left: 0.8rem;
+
     padding-top: 3rem;
+    
 }
 
 .navegacion li a {
@@ -285,6 +306,16 @@
 .iconos a:hover {
     transform: scale(1.2);
 }
+.nombre-usuario {
+    width: 120px; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+
 .productos.activo {
     color: #A70608;
 }
@@ -390,3 +421,448 @@
         mirror: true    
     });
 </script>
+<style>
+    body {
+    background-color: black;
+}
+
+#header {
+    color: white;
+    padding: 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 160px;
+    z-index: 9999999999999999;
+}
+
+.carrito {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.contador-carrito {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-contenedor {
+    padding: 10px 20px;
+    margin-bottom: 1rem;
+}
+
+#Contenedor1-nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.contenedor-logo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.contenedor-logo svg {
+    mix-blend-mode: screen;
+}
+
+.header-contenedor-interior {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 2rem;
+    padding-top: 1rem;
+}
+
+.header-contenedor-interior a {
+    padding-top: 5px;
+}
+
+.header-contenedor-interior label {
+    color: #FFF;
+    font-family: "Inria Serif";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 52px;
+}
+
+#Contenedor2-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-right: -9rem;
+    transition: all 0.3s ease;
+}
+
+.contenedor-central-navegacion {
+    display: flex;
+    flex-direction: column;
+    margin-left: -5rem;
+}
+
+.contenedor-central-navegacion form {
+    display: flex;
+    justify-content: center;
+}
+
+.contenedor-central-navegacion form input {
+    border-radius: 30px;
+    width: 379px;
+    height: 40px;
+    border: none;
+    padding-left: 1rem;
+}
+
+.contenedor-central-navegacion form button {
+    background-color: black;
+    border: none;
+}
+
+.navegacion {
+    display: flex;
+    list-style-type: none;
+    width: 600px;
+    padding-top: 3rem;
+}
+
+.navegacion li a {
+    text-align: center;
+    font-family: "Crimson Text";
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration: none;
+    margin-left: 2.9rem;
+    transition: all 0.7s ease-in-out;
+    position: relative;
+}
+
+.navegacion li a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    width: 100%;
+    height: 2px;
+    background-color: #A70608;
+    transition: transform 0.3s ease-in-out;
+}
+
+.navegacion li a:hover::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+.navegacion li a:hover {
+    color: #A70608;
+    font-weight: 400;
+    font-size: 18px;
+    transition: all 0.8s ease;
+}
+
+.productos,
+.promociones,
+.nosotros,
+.inicio {
+    color: white;
+}
+
+.iconos {
+    display: flex;
+    gap: 37px;
+    align-items: center;
+    padding-top: 2rem;
+    position: relative;
+    margin-right: 5rem;
+}
+
+.iconos a {
+    text-decoration: none;
+    color: white;
+    transition: all 0.5s ease;
+}
+
+.iconos a:hover {
+    transform: scale(1.2);
+}
+
+.nombre-usuario {
+    width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.productos.activo {
+    color: #A70608;
+}
+
+.inicio.activo {
+    color: #A70608;
+}
+
+.promociones.activo {
+    color: #A70608;
+}
+
+.nosotros.activo {
+    color: #A70608;
+}
+
+.input-buscar {
+    color: black;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 8px;
+}
+
+.search-bar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.content {
+    height: 200px;
+    padding: 20px;
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+
+/* Tablets - hasta 1024px */
+@media (max-width: 1024px) {
+    #header {
+        height: auto;
+        min-height: 140px;
+        padding: 10px 0;
+    }
+    
+    #Contenedor2-nav {
+        margin-right: -3rem;
+    }
+    
+    .contenedor-central-navegacion {
+        margin-left: -2rem;
+    }
+    
+    .contenedor-central-navegacion form input {
+        width: 300px;
+    }
+    
+    .navegacion {
+        width: 500px;
+        padding-top: 2rem;
+    }
+    
+    .navegacion li a {
+        margin-left: 2rem;
+        font-size: 16px;
+    }
+    
+    .iconos {
+        gap: 25px;
+        margin-right: 2rem;
+    }
+}
+
+/* Tablets pequeñas - hasta 768px */
+@media (max-width: 768px) {
+    #header {
+        height: auto;
+        min-height: 120px;
+        flex-direction: column;
+        padding: 15px 0;
+    }
+    
+    .header-contenedor {
+        padding: 5px 15px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .contenedor-logo {
+        margin-top: 0.5rem;
+    }
+    
+    .header-contenedor-interior {
+        padding-bottom: 1rem;
+        padding-top: 0.5rem;
+    }
+    
+    .header-contenedor-interior label {
+        font-size: 16px;
+        line-height: 40px;
+    }
+    
+    #Contenedor2-nav {
+        margin-right: 0;
+        width: 100%;
+    }
+    
+    .contenedor-central-navegacion {
+        margin-left: 0;
+        width: 100%;
+        align-items: center;
+    }
+    
+    .contenedor-central-navegacion form {
+        width: 90%;
+        max-width: 400px;
+    }
+    
+    .contenedor-central-navegacion form input {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .navegacion {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding-top: 1rem;
+        gap: 10px;
+    }
+    
+    .navegacion li a {
+        margin-left: 1rem;
+        margin-right: 1rem;
+        font-size: 15px;
+    }
+    
+    .iconos {
+        gap: 20px;
+        margin-right: 0;
+        padding-top: 1rem;
+        justify-content: center;
+    }
+    
+    .nombre-usuario {
+        width: 100px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Móviles - hasta 480px */
+@media (max-width: 480px) {
+    #header {
+        min-height: 100px;
+        padding: 10px 0;
+    }
+    
+    .header-contenedor {
+        padding: 5px 10px;
+    }
+    
+    .contenedor-logo {
+        margin-top: 0.25rem;
+    }
+    
+    .header-contenedor-interior {
+        padding-bottom: 0.5rem;
+        padding-top: 0.25rem;
+    }
+    
+    .header-contenedor-interior label {
+        font-size: 14px;
+        line-height: 30px;
+    }
+    
+    .contenedor-central-navegacion form {
+        width: 95%;
+    }
+    
+    .contenedor-central-navegacion form input {
+        width: 100%;
+        max-width: 250px;
+        height: 35px;
+        font-size: 14px;
+    }
+    
+    .navegacion {
+        padding-top: 0.5rem;
+        justify-content: space-around;
+    }
+    
+    .navegacion li a {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        font-size: 13px;
+    }
+    
+    .iconos {
+        gap: 15px;
+        padding-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .nombre-usuario {
+        width: 80px;
+        font-size: 0.7rem;
+    }
+    
+    .carrito {
+        margin-right: 10px;
+    }
+    
+    .contador-carrito {
+        width: 16px;
+        height: 16px;
+        font-size: 10px;
+    }
+}
+
+/* Móviles muy pequeños - hasta 320px */
+@media (max-width: 320px) {
+    .navegacion {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .navegacion li a {
+        margin: 5px 0;
+        display: block;
+        text-align: center;
+    }
+    
+    .contenedor-central-navegacion form input {
+        max-width: 200px;
+        height: 32px;
+    }
+    
+    .iconos {
+        gap: 10px;
+    }
+    
+    .header-contenedor-interior label {
+        font-size: 12px;
+    }
+}
+</style>

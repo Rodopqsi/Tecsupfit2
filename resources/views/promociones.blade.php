@@ -192,16 +192,14 @@
 <body style="background-color: #F5F5F5;" class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18]">
     <div style="display:flex; justify-content:center; align-items:center; margin:3rem;">
         Cupones Validos
-    </div>        
+    </div>
+    @extends('cupones.disponibles')        
     </body>
 
 
 
 
 
-
-
-@extends('components.footer')
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -328,115 +326,7 @@ body {
     color: #666;
   }
   
-/* parte  final */
-  footer {
-    background-color: #000;
-    color: white;
-    font-size: 14px;
-    padding-top: 0;
-  }
-  
-  .promo-banner {
-    background-color: #b30000;
-    color: #fff;
-    padding: 15px;
-    text-align: center;
-    font-style: italic;
-  }
-  
-  .footer-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 30px;
-    gap: 30px;
-  }
-  
-  .subscribe-section {
-    flex: 1 1 250px;
-    max-width: 300px;
-  }
-  
-  .subscribe-section h4 {
-    margin-bottom: 10px;
-  }
-  
-  .subscribe-form {
-    display: flex;
-    margin-bottom: 10px;
-  }
-  
-  .subscribe-form input {
-    flex: 1;
-    padding: 8px;
-  }
-  
-  .subscribe-form button {
-    background-color: #888;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    cursor: pointer;
-  }
-  
-footer .social{
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
 
-footer .socials a{
-    color: #ffffff;
-    border: 1px solid #ffffff;
-    padding: 6px 8px;
-    font-size: 1.25rem;
-    border-radius: 100%;
-    transition: all 0.3 ease;
-}
-
-footer .socials a:hover{
-    color: #dddddd;
-    border: 1px solid #dddddd;
-    background-color: 2rem;
-    font-size: 1.2rem;
-    font-weight: 500;
-}
-
-  .subscribe-section label {
-    font-size: 12px;
-  }
-  
-  .footer-links {
-    display: flex;
-    flex: 2;
-    justify-content: space-around;
-    gap: 30px;
-  }
-  
-  .footer-links div h5 {
-    margin-bottom: 10px;
-  }
-  
-  .footer-links ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .footer-links ul li {
-    margin-bottom: 5px;
-  }
-  
-  .social-icons img {
-    width: 24px;
-    margin-right: 10px;
-  }
-  
-  .footer-bottom {
-    text-align: center;
-    border-top: 1px solid #444;
-    padding: 10px 0;
-    font-size: 12px;
-  }
 </style>
 
 <script>

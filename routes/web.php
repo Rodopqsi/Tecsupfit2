@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\CuponController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\PedidoController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\TamanoController;
 use App\Http\Controllers\SaborController;
 use App\Http\Controllers\OpinionController;
 use App\Http\Controllers\Admin\UserController;
+use App\Models\Cupon;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -44,8 +46,13 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 Route::get('/gracias', fn () => view('gracias'))->name('gracias');
-Route::get('/promociones', function(){
-    return view('promociones');
+Route::get('/promociones', function () {
+    $cupones = Cupon::where('stock', '>', 0)
+        ->whereDate('fecha_inicio', '<=', now())
+        ->whereDate('fecha_fin', '>=', now())
+        ->get();
+
+    return view('promociones', compact('cupones'));
 });
 Route::get('/politicas_privacidad', function(){
     return view('politicas_de_privacidad');
@@ -133,6 +140,7 @@ Route::delete('/reclamaciones/{reclamacion}', [ReclamacionController::class, 'de
 Route::post('/productos/{producto}/opiniones', [OpinionController::class, 'store'])->name('opiniones.store');
 Route::post('/carrito/aplicar-cupon', [App\Http\Controllers\CarritoController::class, 'aplicarCupon'])->name('carrito.aplicar-cupon');
 
-Route::middleware(['auth', 'admin'])->resource('cupones', CuponController::class);
+Route::resource('cupones', CuponController::class)->parameters(['cupones' => 'cupon']);
 Route::middleware('auth')->get('/cupones-disponibles', [CuponController::class, 'verCupones'])->name('cupones.ver');
 Route::middleware('auth')->post('/aplicar-cupon', [CarritoController::class, 'aplicarCupon'])->name('carrito.aplicar-cupon');
+Route::post('/carrito/remover-cupon', [CarritoController::class, 'removerCupon'])->name('carrito.remover-cupon');

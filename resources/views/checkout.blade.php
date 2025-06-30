@@ -19,12 +19,33 @@
     <h2 class="text-xl font-bold mb-4">Detalles de facturación</h2>
 
     <!-- Aplicar cupón -->
-    <form action="{{ route('carrito.aplicar-cupon') }}" method="POST" class="mb-4">
-      @csrf
-      <label class="block mb-2 font-bold">¿Tienes un cupón?</label>
-      <input type="text" name="cupon" class="border p-2 rounded w-1/2" placeholder="Ingresa tu cupón" required>
-      <button type="submit" class="ml-2 bg-blue-600 text-white px-4 py-2 rounded">Aplicar cupón</button>
-    </form>
+    <form action="{{ route('carrito.aplicar-cupon') }}" method="POST" class="mb-6">
+  @csrf
+  <label class="block mb-2 font-semibold text-gray-700">¿Tienes un cupón?</label>
+  
+  <div class="flex items-center gap-2">
+    <input type="text" name="cupon"
+            value="{{ old('cupon') }}"
+            class="border border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Ingresa tu cupón" required>
+    <button type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">
+      Aplicar
+    </button>
+  </div>
+
+  @if(session('success'))
+    <p class="mt-2 text-green-600">{{ session('success') }}</p>
+  @endif
+
+  @if(session('error'))
+    <p class="mt-2 text-red-600">{{ session('error') }}</p>
+  @endif
+
+  @error('cupon')
+    <p class="mt-2 text-red-500 text-sm">{{ $message }}</p>
+  @enderror
+</form>
 
     <!-- Formulario de datos del cliente -->
     <form id="formulario-pago" class="space-y-4" method="POST">
@@ -32,38 +53,59 @@
       <section class="max-w-xl p-6 rounded shadow space-y-4 bg-gray-100">
 
         <script>
-          const ubigeo = {
-            "Lima": ["Lima", "Ate", "Callao", "San Isidro", "Miraflores", "Comas", "Los Olivos", "Surco", "San Borja", "Villa El Salvador", "Villa María del Triunfo", "San Juan de Lurigancho", "San Juan de Miraflores", "Chorrillos", "Barranco", "La Molina", "Jesús María", "Pueblo Libre"],
-            "Arequipa": ["Arequipa", "Cayma", "Cerro Colorado", "Mariano Melgar", "Yanahuara", "José Luis Bustamante y Rivero", "Miraflores", "Paucarpata", "Hunter"],
-            "Cusco": ["Cusco", "San Jerónimo", "Wanchaq", "Santiago", "San Sebastián", "Poroy", "Saylla"]
-          };
+      const ubigeo = {
+    
+      "Lima": ["Lima", "Ate", "Callao", "San Isidro", "Miraflores", "Comas", "Los Olivos", "Surco", "San Borja", "Villa El Salvador", "Villa María del Triunfo", "San Juan de Lurigancho", "San Juan de Miraflores", "Chorrillos", "Barranco", "La Molina", "Jesús María", "Pueblo Libre"],
+    "Arequipa": ["Arequipa", "Cayma", "Cerro Colorado", "Mariano Melgar", "Yanahuara", "José Luis Bustamante y Rivero", "Miraflores", "Paucarpata", "Hunter"],
+    "Cusco": ["Cusco", "San Jerónimo", "Wanchaq", "Santiago", "San Sebastián", "Poroy", "Saylla"],
+    "La Libertad": ["Trujillo", "Florencia de Mora", "El Porvenir", "La Esperanza", "Víctor  Larco", "Huanchaco", "Moche", "Salaverry"],
+    "Piura": ["Piura", "Sullana", "Talara", "Paita", "Catacaos", "Sechura", "La Unión", "Tambogrande"],
+    "Junín": ["Huancayo", "El Tambo", "Chilca", "Huayucachi", "Sicaya", "Pilcomayo", "Chongos  Bajo"],
+    "Lambayeque": ["Chiclayo", "José Leonardo Ortiz", "La Victoria", "Lambayeque", "Ferreñafe", "Pimentel"],
+    "Tacna": ["Tacna", "Alto de la Alianza", "Ciudad Nueva", "Gregorio Albarracín"],
+    "Puno": ["Puno", "Juliaca", "Azángaro", "Ilave", "Ayaviri"],
+    "Ancash": ["Chimbote", "Huaraz", "Nuevo Chimbote", "Casma", "Caraz"],
+    "Ica": ["Ica", "Chincha Alta", "Pisco", "Nazca", "Palpa"],
+    "Callao": ["Callao", "Bellavista", "La Perla", "Carmen de La Legua", "Ventanilla", "Mi Perú"],
+    "San Martín": ["Tarapoto", "Moyobamba", "Lamas", "Bellavista", "Juanjuí"],
+    "Loreto": ["Iquitos", "Punchana", "Belén", "San Juan Bautista", "Nauta"],
+    "Ucayali": ["Pucallpa", "Yarinacocha", "Manantay"],
+    "Madre de Dios": ["Puerto Maldonado", "Tambopata", "Inambari"],
 
-          window.addEventListener('DOMContentLoaded', () => {
-            const regionSelect = document.querySelector('select[name="region"]');
-            const distritoSelect = document.querySelector('select[name="distrito"]');
+        "Huánuco": ["Huánuco", "Tingo María", "La Unión", "Ambo", "Panao"],
+        "Apurímac": ["Abancay", "Andahuaylas", "Aymaraes", "Antabamba"],
+        "Ayacucho": ["Ayacucho", "Huamanga", "Cangallo", "Huanta"],
+        "Cajamarca": ["Cajamarca", "Jaén", "San Ignacio", "Celendín"],
+        "Pasco": ["Pasco", "Oxapampa", "Villa Rica"],
+        "Tumbes": ["Tumbes", "Zarumilla", "Contralmirante Villar"]
+      };
 
-            regionSelect.innerHTML = '<option value="">Selecciona una región</option>';
-            for (const region in ubigeo) {
+      window.addEventListener('DOMContentLoaded', () => {
+        const regionSelect = document.querySelector('select[name="region"]');
+        const distritoSelect = document.querySelector('select[name="distrito"]');
+
+        regionSelect.innerHTML = '<option value="">Selecciona una región</option>';
+        for (const region in ubigeo) {
+          const option = document.createElement('option');
+          option.value = region;
+          option.textContent = region;
+          regionSelect.appendChild(option);
+        }
+
+        regionSelect.addEventListener('change', () => {
+          const region = regionSelect.value;
+          distritoSelect.innerHTML = '<option value="">Selecciona un distrito</option>';
+          if (ubigeo[region]) {
+            ubigeo[region].forEach(distrito => {
               const option = document.createElement('option');
-              option.value = region;
-              option.textContent = region;
-              regionSelect.appendChild(option);
-            }
-
-            regionSelect.addEventListener('change', () => {
-              const region = regionSelect.value;
-              distritoSelect.innerHTML = '<option value="">Selecciona un distrito</option>';
-              if (ubigeo[region]) {
-                ubigeo[region].forEach(distrito => {
-                  const option = document.createElement('option');
-                  option.value = distrito;
-                  option.textContent = distrito;
-                  distritoSelect.appendChild(option);
-                });
-              }
+              option.value = distrito;
+              option.textContent = distrito;
+              distritoSelect.appendChild(option);
             });
-          });
-        </script>
+          }
+        });
+      });
+    </script>
 
         <div class="flex gap-4">
           <input type="text" name="nombre" placeholder="Nombre" class="border w-1/2 p-2" required>
@@ -85,7 +127,7 @@
   </div>
 
   <!-- RESUMEN DE PEDIDO -->
-  <div>
+  <div style="width:auto;">
     <h2 class="text-xl font-bold mb-4">Su pedido</h2>
     <div class="border p-4 space-y-4">
       @if(session('success'))
@@ -102,9 +144,24 @@
         </div>
         @endforeach
 
-        @if(session('cupon_codigo'))
-        <p class="text-green-600">Cupón aplicado: {{ session('cupon_codigo') }} - Descuento: S/ {{ number_format($descuento, 2) }}</p>
+        @if(session('cupones'))
+          <div class="space-y-2">
+            @foreach(session('cupones') as $codigo => $cupon)
+              <div class="flex justify-between items-center bg-green-100 border border-green-300 p-2 rounded">
+                <span>
+                  Cupón: <strong>{{ $codigo }}</strong> - Descuento: S/ {{ number_format($cupon['descuento'], 2) }}
+                </span>
+                <form method="POST" action="{{ route('carrito.remover-cupon') }}">
+                  @csrf
+                  <input type="hidden" name="codigo" value="{{ $codigo }}">
+                  <button type="submit" class="ml-4 text-red-600 hover:underline text-sm">Quitar</button>
+                </form>
+              </div>
+            @endforeach
+          </div>
         @endif
+
+
 
         <div class="flex justify-between">
           <span>Subtotal</span>
@@ -154,16 +211,17 @@ paypal.Buttons({
       })
       .then(response => response.json())
       .then(data => {
-        if (data.success && data.redirect_url) {
-          window.location.href = data.redirect_url;
-        } else {
-          alert("Ocurrió un error al procesar el pedido.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al procesar el pago:", error);
-        alert("Ocurrió un error al guardar el pedido.");
-      });
+  if (data.success && data.redirect_url) {
+    window.location.href = data.redirect_url;
+  } else {
+    alert(data.message || "Ocurrió un error al procesar el pedido.");
+  }
+})
+.catch(error => {
+  console.error("Error al procesar el pago:", error);
+  alert("Ocurrió un error al guardar el pedido.");
+});
+
     });
   }
 }).render('#paypal-button-container');

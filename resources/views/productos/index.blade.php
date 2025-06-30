@@ -4,7 +4,7 @@
     </div>
 
 <!-- Search Container -->
-<section class="Contenedor_general" style="margin-left:40px;">
+<section class="Contenedor_general" style="background: blue; ">
     <div class="search-container">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <form method="GET" action="{{ route('productos.index') }}" id="filterForm" style="flex: 1;">
@@ -15,7 +15,7 @@
         </form>
         
         <div class="view-toggle">
-            <a href="/" class="text-primary">
+            <a href="/" class="text-primary" style="text-decoration:none; ">
                 <i class="fas fa-eye"></i> Ver Tienda
             </a>
         </div>
@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="flex-1">
                                         <input type="file" name="imagen" placeholder="Imagen de la Marca" required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 " />
                                     </div>
                                     <button type="submit"
                                     class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-full md:w-auto">Agregar Marca</button>
@@ -444,13 +444,14 @@
                     </div>
                     
                     <div class="product-actions">
-                        <a href="{{ route('productos.show', $producto) }}" class="btn btn-info btn-sm">Ver</a>
-                        <a href="{{ route('productos.edit', $producto) }}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{{ route('productos.show', $producto) }}" style="text-decoration: none; color: white; background-color: #198754; border-radius: 5px; width: 60px; height: 30px; font-size: 13px; font-weight: 400; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">Ver</a>
+                            <style>a[href="{{ route('productos.show', $producto) }}"]:hover {background-color: #27a36d; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transform: scale(1.05); }</style>
+                            <a href="{{ route('productos.edit', $producto) }}" style="text-decoration: none; color: white; background-color: #F2CF59; border-radius: 5px; width: 60px; height: 30px; font-size: 13px; font-weight: 400; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">Editar</a>
+                            <style>a[href="{{ route('productos.edit', $producto) }}"]:hover {background-color:rgb(246, 212, 100); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transform: scale(1.05); }</style>
                         <form action="{{ route('productos.destroy', $producto) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" 
-                            onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
                         </form>
                     </div>
                     
@@ -461,13 +462,7 @@
                         </button>
                     </form>
                     
-                    <form action="{{ route('carrito.agregar') }}" method="POST" class="purchase-form">
-                        @csrf
-                        <input type="hidden" name="producto_id" value="{{ $producto->id }}">
-                        <input type="number" name="cantidad" placeholder="Cant." min="1" 
-                                max="{{ $producto->stock->cantidad }}" required>
-                        <button type="submit" class="btn btn-primary btn-sm">Agregar al carrito</button>
-                    </form>
+                    
                     
 
                 </div>
@@ -479,6 +474,7 @@
         
         <!-- Pagination -->
     </div>
+    
 </section>
 @push('scripts')
 <script>
