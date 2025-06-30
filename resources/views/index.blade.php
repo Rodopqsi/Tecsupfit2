@@ -17,16 +17,7 @@
             data-bs-ride="carousel"
         >
         
-@auth
-    @if(auth()->user()->is_admin)
-        <div class="sticky top-4 z-50">
-            <a href="{{ route('productos.index') }}"
-               class="inline-block bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-red-700 transition" style="z-index:5000; position:absolute; right:10px;">
-                Panel administrativo
-            </a>
-        </div>
-    @endif
-@endauth
+
 
 
             <div class="carousel-inner">
@@ -589,7 +580,7 @@
                         <div class="categoria">
                             <p>PROTEINAS</p>
                             <img
-                                src="imagenes/Proteinas/Whey_Protein_Powder_for_Women_Vanilla_Powder_-Low_Carb_Gluten-Free_Grass-Fed-proteinaFrente-removebg-preview.png"
+                                src="imagenes/Proteinas/Whey_Protein_Powder_for_Women_Vanilla_Powder_-_Low_Carb_Gluten-Free_Grass-Fed_-proteinaFrente-removebg-preview.png"
                                 alt=""
                             />
                         </div>
@@ -659,7 +650,8 @@
             <div class="separador">
                 <p>Únete a TecsupFit y potencia tu mejor versión</p>
             </div>
-            <!-- Chatbot flotante -->
+        </section>
+        <!-- Chatbot flotante -->
     <style>
         #chatbot-float-btn {
             position: fixed;
@@ -703,29 +695,19 @@
             }
         }
     </style>
+    
+
     <button id="chatbot-float-btn" title="¿Necesitas ayuda?">
         💬
     </button>
     <iframe id="chatbot-iframe" src="/chatbot/index.html" allow="clipboard-write; clipboard-read" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
     <script>
-        // --- INICIO: Edición para que el chatbot siempre muestre el saludo inicial al entrar a la página ---
-        window.addEventListener('DOMContentLoaded', function() {
-            const iframe = document.getElementById('chatbot-iframe');
-            if (iframe) {
-                // Limpiar el almacenamiento del chatbot para forzar el mensaje inicial
-                try {
-                    iframe.contentWindow?.localStorage?.clear();
-                } catch (e) {}
-                // Forzar recarga del iframe
-                iframe.src = iframe.src;
-            }
-        });
-        // --- FIN EDICIÓN ---
         const btn = document.getElementById('chatbot-float-btn');
         const iframe = document.getElementById('chatbot-iframe');
         btn.addEventListener('click', () => {
             iframe.style.display = iframe.style.display === 'block' ? 'none' : 'block';
         });
+        // Opcional: cerrar el chatbot al hacer clic fuera
         document.addEventListener('click', function(e) {
             if (!btn.contains(e.target) && !iframe.contains(e.target)) {
                 iframe.style.display = 'none';
@@ -738,15 +720,9 @@
 
     <script src="productos-index.js"></script>
     <script src="carruceles.js"></script>
+    
 </html>
-        </section>
-    </body>
-    @extends('components.footer')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="productos-index.js"></script>
-    <script src="carruceles.js"></script>
-</html>
+    
 <style>
     body {
         margin: 0;
@@ -837,7 +813,7 @@
         top: 400px;
     }
 
-    /seccion de productos/
+    /*seccion de productos*/
     .head-productos {
         display: flex;
         flex-direction: column;
@@ -1039,7 +1015,7 @@
         border-radius: 5px;
         transition: width 0.4s;
     }
-    /Carrucel-2/
+    /*Carrucel-2*/
     .carrusel-container {
         width: 100%;
         overflow: hidden;
@@ -1075,7 +1051,7 @@
         }
     }
 
-    /CATEGORIAS/
+    /*CATEGORIAS*/
     .nuestra-categoria {
         margin-top: 12rem;
         padding-top: 2rem;
@@ -1148,7 +1124,7 @@
         color: white;
     }
 
-    /OBJETIVOS/
+    /*OBJETIVOS*/
     .Objetivos {
         margin-top: 9rem;
     }
@@ -1239,7 +1215,7 @@
         padding-left: 1.5rem;
     }
 
-    /OPINIONES/
+    /*OPINIONES*/
     .opiniones-clientes {
         margin: 40px 0 30px 0;
         background: #fafafa;
@@ -1352,7 +1328,7 @@
         }
     }
 
-    /OFERTAS/
+    /*OFERTAS*/
 
     .ofertas {
         background: white;
@@ -1426,7 +1402,7 @@
         }
     }
 
-    /SEPARADOR/
+    /*SEPARADOR*/
     .separador {
         background-color: #a70608;
         width: 100%;
@@ -1447,7 +1423,7 @@
         line-height: normal;
     }
 
-    /FOOTER/
+    /*FOOTER*/
 
     footer {
         background-color: #000;
@@ -1515,4 +1491,726 @@
         cursor: pointer;
     }
 
+</style>
+<style>
+    /* Estilos base existentes con mejoras responsivas */
+body {
+    margin: 1.5px;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Carousel responsivo */
+.carousel-inner img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.boton-imagen-inicio {
+    background-color: transparent;
+    width: 290px;
+    height: 60px;
+    position: absolute;
+    z-index: 1;
+    border-radius: 30px;
+    top: 50%;
+    right: 5%;
+    transform: translateY(-50%);
+}
+
+/* Etiquetas responsivas */
+.etiquetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 30px 20px;
+    padding: 0 10px;
+}
+
+.etiquetas p, span {
+    color: #fff;
+    text-align: center;
+    font-family: "Crimson Text";
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.carta1, .carta2, .carta3, .carta4 {
+    display: flex;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    min-height: 92px;
+}
+
+.carta2, .carta3, .carta4 {
+    border-left: none;
+    height: auto;
+    padding-left: 20px;
+}
+
+.carta2 h3, .carta3 h3, .carta4 h3 {
+    color: #fff;
+    text-align: center;
+    font-family: "Crimson Text";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+    padding-left: 15px;
+    margin: 0;
+}
+
+.carta1 p {
+    text-align: center;
+    line-height: 24px;
+    padding-left: 15px;
+    margin: 0;
+}
+
+/* Carrusel de marcas responsivo */
+.carrusel-container {
+    width: 100%;
+    overflow: hidden;
+    padding-top: 2rem;
+    height: auto;
+    min-height: 120px;
+}
+
+.carrusel-track {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    animation: slide 40s linear infinite;
+}
+
+.carrusel-track img {
+    width: 150px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 10px;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+}
+
+/* Productos responsivos */
+.head-productos {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    margin-top: 2rem;
+    margin-left: 20px;
+}
+
+.head-productos h3 {
+    color: #000;
+    font-family: "Crimson Text";
+    font-size: clamp(24px, 4vw, 30px);
+    font-weight: 600;
+    line-height: normal;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.tabs {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.tabs a {
+    cursor: pointer;
+    color: #000;
+    text-decoration: none;
+    font-family: "Crimson Text";
+    font-size: 14px;
+    font-weight: 400;
+    background-color: transparent;
+    border: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.contenedor-flex {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+    justify-items: center;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
+}
+
+.product-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    width: 100%;
+    max-width: 286px;
+    height: 430px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.product-card a {
+    width: 100%;
+    height: 188px;
+    margin-bottom: 10px;
+    align-self: center;
+    display: flex;
+    justify-content: center;
+}
+
+.product-card img {
+    max-width: 100%;
+    max-height: 188px;
+    object-fit: contain;
+}
+
+/* Cantidad y controles responsivos */
+.agregar-carrito {
+    background: #A70608;
+    width: 100%;
+    max-width: 239px;
+    height: 33px;
+    flex-shrink: 0;
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    padding: 0 10px;
+    align-items: center;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 100%;
+    background-color: transparent;
+}
+
+.cantidad-input {
+    width: 40px;
+    height: 25px;
+    font-size: 12px;
+    border: none;
+    outline: none;
+    text-align: center;
+    color: #fff;
+    background-color: transparent;
+}
+
+.boton-agregar-carrito {
+    color: #FFF;
+    font-family: "Crimson Text";
+    font-size: 13px;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    flex: 1;
+}
+
+/* Categorías responsivas */
+.nuestra-categoria {
+    margin-top: 8rem;
+    padding: 2rem 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nuestra-categoria h3 {
+    color: #000;
+    font-family: "Crimson Text";
+    font-size: clamp(24px, 4vw, 30px);
+    font-weight: 600;
+    align-self: flex-start;
+    margin-bottom: 2rem;
+}
+
+.botones-categoria {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1340px;
+}
+
+.botones-categoria a {
+    width: 100%;
+    height: auto;
+    min-height: 131px;
+    text-decoration: none;
+}
+
+.categoria {
+    background-color: white;
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 131px;
+    box-sizing: border-box;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.categoria img {
+    width: 70px;
+    height: 85px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.categoria p {
+    color: black;
+    font-family: "Crimson Text";
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-align: left;
+    margin: 0;
+}
+
+/* Objetivos responsivos */
+.Objetivos {
+    margin-top: 6rem;
+    padding: 0 20px;
+}
+
+.Objetivos h3 {
+    color: #000;
+    font-family: "Crimson Text";
+    font-size: clamp(24px, 4vw, 30px);
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.objetivos-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 2rem;
+}
+
+.objetivos-cards a {
+    text-decoration: none;
+    width: 100%;
+    height: 300px;
+    transition: all 0.3s ease;
+}
+
+.objetivo1, .objetivo2, .objetivo3, .objetivo4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 10px;
+}
+
+.objetivo1 {
+    background-image: url(imagenes/imgObjetivo/imgobjetivoGananciamuscular.jpg);
+}
+
+.objetivo2 {
+    background-image: url(imagenes/imgObjetivo/imgobjetivoPerdidapeso.jpg);
+}
+
+.objetivo3 {
+    background-image: url(imagenes/imgObjetivo/imhobjetivogananciaEnergia.jpg);
+}
+
+.objetivo4 {
+    background-image: url(imagenes/imgObjetivo/imgobjetivorecuperacionmuscular.jpg);
+}
+
+.objetivo1 p, .objetivo2 p, .objetivo3 p, .objetivo4 p {
+    color: #fff;
+    font-family: "Crimson Text";
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Separador responsivo */
+.separador {
+    background-color: #a70608;
+    width: 100%;
+    height: auto;
+    min-height: 100px;
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px;
+}
+
+.separador p {
+    color: #fff;
+    font-family: "Crimson Text";
+    font-size: clamp(20px, 4vw, 35px);
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+}
+
+/* Chatbot responsivo */
+#chatbot-float-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: #a70608;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+#chatbot-iframe {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    z-index: 9998;
+    display: none;
+    background: #fff;
+}
+
+/* Media Queries */
+
+/* Tablets */
+@media screen and (max-width: 768px) {
+    .boton-imagen-inicio {
+        width: 200px;
+        height: 40px;
+        right: 3%;
+        top: 60%;
+    }
+    
+    .etiquetas {
+        grid-template-columns: 2fr;
+        gap: 15px;
+        margin: 20px 10px;
+    }
+    
+    .carta2, .carta3, .carta4 {
+        border-left: none;
+        padding-left: 0;
+    }
+    
+    .carrusel-track img {
+        width: 120px;
+        height: 70px;
+    }
+    
+    .head-productos {
+        margin-left: 10px;
+        padding: 15px;
+    }
+    
+    .contenedor-flex {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        padding: 0 15px;
+    }
+    
+    .botones-categoria {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .objetivos-cards {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .objetivos-cards a {
+        height: 250px;
+    }
+    
+    #chatbot-iframe {
+        width: calc(100vw - 40px);
+        height: 60vh;
+        right: 20px;
+        bottom: 80px;
+    }
+}
+
+/* Móviles */
+@media screen and (max-width: 480px) {
+    body {
+        margin: 0;
+    }
+    
+    .boton-imagen-inicio {
+        width: 150px;
+        height: 30px;
+        right: 5%;
+        top: 70%;
+    }
+    
+    .etiquetas {
+        margin: 15px 5px;
+        grid-template-columns: 1fr;
+    }
+    
+    .carta1, .carta2, .carta3, .carta4 {
+        padding: 15px;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .carta2 h3, .carta3 h3, .carta4 h3 {
+        font-size: 16px;
+        padding-left: 0;
+        margin-top: 10px;
+    }
+    
+    .carta1 p {
+        padding-left: 0;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+    
+    .carrusel-container {
+        height: 100px;
+        padding-top: 1rem;
+    }
+    
+    .carrucel-track img {
+        width: 100px;
+        height: 60px;
+    }
+    
+    .head-productos {
+        margin-left: 5px;
+        padding: 10px;
+        margin-top: 1rem;
+    }
+    
+    .tabs {
+        gap: 10px;
+        justify-content: center;
+    }
+    
+    .tabs a {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+    
+    .contenedor-flex {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 0 10px;
+        margin-top: 20px;
+    }
+    
+    .product-card {
+        height: auto;
+        min-height: 400px;
+    }
+    
+    .agregar-carrito {
+        width: 100%;
+        max-width: none;
+        gap: 5px;
+        padding: 0 5px;
+    }
+    
+    .boton-agregar-carrito {
+        font-size: 11px;
+    }
+    
+    .nuestra-categoria {
+        margin-top: 4rem;
+        padding: 1rem 10px;
+    }
+    
+    .botones-categoria {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .categoria {
+        height: 100px;
+        padding: 10px;
+    }
+    
+    .categoria img {
+        width: 50px;
+        height: 60px;
+    }
+    
+    .categoria p {
+        font-size: 12px;
+    }
+    
+    .Objetivos {
+        margin-top: 3rem;
+        padding: 0 10px;
+    }
+    
+    .objetivos-cards {
+        margin-top: 1rem;
+    }
+    
+    .objetivos-cards a {
+        height: 200px;
+    }
+    
+    .objetivo1 p, .objetivo2 p, .objetivo3 p, .objetivo4 p {
+        font-size: 16px;
+        padding: 15px;
+    }
+    
+    .separador {
+        padding: 20px 10px;
+        margin-top: 2rem;
+    }
+    
+    #chatbot-float-btn {
+        width: 45px;
+        height: 45px;
+        bottom: 15px;
+        right: 15px;
+        font-size: 1.2rem;
+    }
+    
+    #chatbot-iframe {
+        width: calc(100vw - 20px);
+        height: 70vh;
+        right: 10px;
+        bottom: 70px;
+    }
+}
+
+/* Móviles muy pequeños */
+@media screen and (max-width: 320px) {
+    .head-productos h3 {
+        font-size: 22px;
+    }
+    
+    .contenedor-flex {
+        grid-template-columns: 1fr;
+        padding: 0 5px;
+    }
+    
+    .product-card {
+        max-width: 100%;
+    }
+    
+    .categoria {
+        height: 90px;
+        padding: 8px;
+    }
+    
+    .categoria img {
+        width: 40px;
+        height: 50px;
+    }
+    
+    .categoria p {
+        font-size: 11px;
+    }
+    
+    .objetivos-cards a {
+        height: 180px;
+    }
+    
+    .objetivo1 p, .objetivo2 p, .objetivo3 p, .objetivo4 p {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+/* Landscape móviles */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .boton-imagen-inicio {
+        top: 50%;
+        right: 10%;
+    }
+    
+    .head-productos {
+        margin-top: 1rem;
+    }
+    
+    .nuestra-categoria {
+        margin-top: 2rem;
+    }
+    
+    .Objetivos {
+        margin-top: 2rem;
+    }
+    
+    .separador {
+        margin-top: 2rem;
+    }
+}
+
+/* Pantallas grandes */
+@media screen and (min-width: 1200px) {
+    .carta2, .carta3, .carta4 {
+        border-left: 2px solid white;
+        height: 92px;
+        padding-left: 54px;
+    }
+    
+    .contenedor-flex {
+        grid-template-columns: repeat(auto-fit, minmax(286px, 1fr));
+        max-width: 1500px;
+    }
+    
+    .botones-categoria {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 1340px;
+        height: auto;
+    }
+    
+    .objetivos-cards {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .contenedor-flex {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
 </style>
