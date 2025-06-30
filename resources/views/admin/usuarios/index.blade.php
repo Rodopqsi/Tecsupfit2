@@ -1,6 +1,5 @@
-<div>
-    @include('components.side_bar')
-</div>
+@include('components.side_bar')
+
 <section class="Contenedor_general">
 <x-app-layout>
     <x-slot name="header">

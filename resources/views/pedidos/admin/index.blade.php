@@ -1,7 +1,7 @@
 <body class="display:flex;">
-    <div class="sidebar">
-        @extends('components.side_bar')
-    </div>
+
+        @include('components.side_bar')
+
 
 <!-- Search Container -->
 <section class="Contenedor_general" style="margin-left:40px;">

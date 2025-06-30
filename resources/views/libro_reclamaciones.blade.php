@@ -257,6 +257,7 @@
     </style>
 </head>
 <body>
+    @include(components.side_bar)
     <div class="container">
         <div class="header">
             <h1>📋 Libro de Reclamaciones</h1>

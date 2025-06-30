@@ -8,6 +8,9 @@
 <section id="header" class="fixed w-full top-0 z-50 transition-all duration-300 bg-black shadow-sm" style="z-index: 9999999999999;">
 
             <section id="Contenedor1-nav">
+                <button class="menu-toggle" style="display:none; background:none; border:none; color:white;">
+    <i class="ri-menu-line"></i>
+</button>
                 <div class="header-contenedor">
                     <div class="contenedor-logo">
                         <a href=""><svg width="240" height="63" viewBox="0 0 277 93" fill="none"     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999 /xlink">
@@ -53,7 +56,7 @@
 
 
 
-                <div class="navegacion">
+                <div class="navegacion" id="mobile-nav">
                     <li>
                         <a href="/" class="inicio<?php echo ($_SERVER['REQUEST_URI'] == '/') ? ' activo' : ''; ?>">Inicio</a>
                         <a href="/products" class="productos<?php echo ($_SERVER['REQUEST_URI'] == '/products') ? ' activo' : ''; ?>">Productos</a>
@@ -421,448 +424,118 @@
         mirror: true    
     });
 </script>
+
 <style>
-    body {
-    background-color: black;
-}
+    /*Medias querys*/
+    @media (max-width: 768px) {
 
-#header {
-    color: white;
-    padding: 0px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 160px;
-    z-index: 9999999999999999;
-}
-
-.carrito {
-    position: relative;
-    display: inline-block;
-    margin-right: 20px;
-}
-
-.contador-carrito {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: red;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.header-contenedor {
-    padding: 10px 20px;
-    margin-bottom: 1rem;
-}
-
-#Contenedor1-nav {
-    display: flex;
-    flex-direction: column;
-}
-
-.contenedor-logo {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 1.5rem;
-}
-
-.contenedor-logo svg {
-    mix-blend-mode: screen;
-}
-
-.header-contenedor-interior {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 2rem;
-    padding-top: 1rem;
-}
-
-.header-contenedor-interior a {
-    padding-top: 5px;
-}
-
-.header-contenedor-interior label {
-    color: #FFF;
-    font-family: "Inria Serif";
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 52px;
-}
-
-#Contenedor2-nav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    margin-right: -9rem;
-    transition: all 0.3s ease;
-}
-
-.contenedor-central-navegacion {
-    display: flex;
-    flex-direction: column;
-    margin-left: -5rem;
-}
-
-.contenedor-central-navegacion form {
-    display: flex;
-    justify-content: center;
-}
-
-.contenedor-central-navegacion form input {
-    border-radius: 30px;
-    width: 379px;
-    height: 40px;
-    border: none;
-    padding-left: 1rem;
-}
-
-.contenedor-central-navegacion form button {
-    background-color: black;
-    border: none;
-}
-
-.navegacion {
-    display: flex;
-    list-style-type: none;
-    width: 600px;
-    padding-top: 3rem;
-}
-
-.navegacion li a {
-    text-align: center;
-    font-family: "Crimson Text";
-    font-size: 17px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    text-decoration: none;
-    margin-left: 2.9rem;
-    transition: all 0.7s ease-in-out;
-    position: relative;
-}
-
-.navegacion li a::after {
-    content: '';
-    position: absolute;
-    bottom: -3px;
-    left: 50%;
-    transform: translateX(-50%) scaleX(0);
-    transform-origin: center;
-    width: 100%;
-    height: 2px;
-    background-color: #A70608;
-    transition: transform 0.3s ease-in-out;
-}
-
-.navegacion li a:hover::after {
-    transform: translateX(-50%) scaleX(1);
-}
-
-.navegacion li a:hover {
-    color: #A70608;
-    font-weight: 400;
-    font-size: 18px;
-    transition: all 0.8s ease;
-}
-
-.productos,
-.promociones,
-.nosotros,
-.inicio {
-    color: white;
-}
-
-.iconos {
-    display: flex;
-    gap: 37px;
-    align-items: center;
-    padding-top: 2rem;
-    position: relative;
-    margin-right: 5rem;
-}
-
-.iconos a {
-    text-decoration: none;
-    color: white;
-    transition: all 0.5s ease;
-}
-
-.iconos a:hover {
-    transform: scale(1.2);
-}
-
-.nombre-usuario {
-    width: 120px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
-    font-size: 0.9rem;
-}
-
-.productos.activo {
-    color: #A70608;
-}
-
-.inicio.activo {
-    color: #A70608;
-}
-
-.promociones.activo {
-    color: #A70608;
-}
-
-.nosotros.activo {
-    color: #A70608;
-}
-
-.input-buscar {
-    color: black;
-}
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.search-bar input {
-    flex: 1;
-    padding: 8px;
-}
-
-.search-bar button {
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-.content {
-    height: 200px;
-    padding: 20px;
-}
-
-/* ===== RESPONSIVE STYLES ===== */
-
-/* Tablets - hasta 1024px */
-@media (max-width: 1024px) {
-    #header {
-        height: auto;
-        min-height: 140px;
-        padding: 10px 0;
-    }
-    
-    #Contenedor2-nav {
-        margin-right: -3rem;
-    }
-    
+    /* Oculta navegación horizontal */
+    .navegacion,
     .contenedor-central-navegacion {
-        margin-left: -2rem;
+        display: none !important;
     }
-    
-    .contenedor-central-navegacion form input {
-        width: 300px;
-    }
-    
-    .navegacion {
-        width: 500px;
-        padding-top: 2rem;
-    }
-    
-    .navegacion li a {
-        margin-left: 2rem;
-        font-size: 16px;
-    }
-    
-    .iconos {
-        gap: 25px;
-        margin-right: 2rem;
-    }
-}
-
-/* Tablets pequeñas - hasta 768px */
-@media (max-width: 768px) {
-    #header {
-        height: auto;
-        min-height: 120px;
-        flex-direction: column;
-        padding: 15px 0;
-    }
-    
-    .header-contenedor {
-        padding: 5px 15px;
-        margin-bottom: 0.5rem;
-    }
-    
-    .contenedor-logo {
-        margin-top: 0.5rem;
-    }
-    
-    .header-contenedor-interior {
-        padding-bottom: 1rem;
-        padding-top: 0.5rem;
-    }
-    
-    .header-contenedor-interior label {
-        font-size: 16px;
-        line-height: 40px;
-    }
-    
-    #Contenedor2-nav {
-        margin-right: 0;
-        width: 100%;
-    }
-    
-    .contenedor-central-navegacion {
-        margin-left: 0;
-        width: 100%;
-        align-items: center;
-    }
-    
-    .contenedor-central-navegacion form {
-        width: 90%;
-        max-width: 400px;
-    }
-    
-    .contenedor-central-navegacion form input {
-        width: 100%;
-        max-width: 300px;
-    }
-    
-    .navegacion {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-        padding-top: 1rem;
-        gap: 10px;
-    }
-    
-    .navegacion li a {
+    .menu-toggle {
+        display: block !important;
+        font-size: 26px;
         margin-left: 1rem;
-        margin-right: 1rem;
-        font-size: 15px;
     }
-    
-    .iconos {
-        gap: 20px;
-        margin-right: 0;
-        padding-top: 1rem;
-        justify-content: center;
-    }
-    
-    .nombre-usuario {
-        width: 100px;
-        font-size: 0.8rem;
-    }
-}
 
-/* Móviles - hasta 480px */
-@media (max-width: 480px) {
-    #header {
-        min-height: 100px;
-        padding: 10px 0;
-    }
-    
-    .header-contenedor {
-        padding: 5px 10px;
-    }
-    
-    .contenedor-logo {
-        margin-top: 0.25rem;
-    }
-    
-    .header-contenedor-interior {
-        padding-bottom: 0.5rem;
-        padding-top: 0.25rem;
-    }
-    
-    .header-contenedor-interior label {
-        font-size: 14px;
-        line-height: 30px;
-    }
-    
-    .contenedor-central-navegacion form {
-        width: 95%;
-    }
-    
-    .contenedor-central-navegacion form input {
+    .navegacion {
+        display: none;
         width: 100%;
-        max-width: 250px;
-        height: 35px;
-        font-size: 14px;
-    }
-    
-    .navegacion {
-        padding-top: 0.5rem;
-        justify-content: space-around;
-    }
-    
-    .navegacion li a {
-        margin-left: 0.5rem;
-        margin-right: 0.5rem;
-        font-size: 13px;
-    }
-    
-    .iconos {
-        gap: 15px;
-        padding-top: 0.5rem;
-        flex-wrap: wrap;
-    }
-    
-    .nombre-usuario {
-        width: 80px;
-        font-size: 0.7rem;
-    }
-    
-    .carrito {
-        margin-right: 10px;
-    }
-    
-    .contador-carrito {
-        width: 16px;
-        height: 16px;
-        font-size: 10px;
-    }
-}
-
-/* Móviles muy pequeños - hasta 320px */
-@media (max-width: 320px) {
-    .navegacion {
         flex-direction: column;
         align-items: center;
-        gap: 5px;
+        background-color: black;
     }
-    
-    .navegacion li a {
-        margin: 5px 0;
-        display: block;
+
+    .navegacion li {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
         text-align: center;
     }
-    
-    .contenedor-central-navegacion form input {
-        max-width: 200px;
-        height: 32px;
+
+    .navegacion li a {
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
-    .iconos {
+    /* Header como en la imagen: compacto, fila horizontal */
+    #header {
+        flex-direction: row !important;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1rem;
+        height: auto !important;
+    }
+
+    /* Agrupar logo centrado con lema */
+    .contenedor-logo {
+        flex-direction: row !important;
+        align-items: center;
+        justify-content: center;
         gap: 10px;
+        margin-top: 0;
     }
-    
-    .header-contenedor-interior label {
-        font-size: 12px;
+
+    .contenedor-logo img {
+        height: 40px;
+        width: auto;
+    }
+
+    .contenedor-logo span {
+        display: block;
+        font-size: 0.7rem;
+        line-height: 1.1rem;
+    }
+
+    /* Iconos derecha */
+    .iconos {
+        margin-right: 0;
+        padding-top: 0;
+        gap: 20px;
+    }
+
+    /* Menú hamburguesa visible */
+    .menu-toggle {
+        display: block !important;
+        font-size: 24px;
+        margin-right: 10px;
+    }
+
+    .nombre-usuario {
+        display: none;
     }
 }
+
 </style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.getElementById('menu-toggle');
+        const nav = document.getElementById('mobile-nav');
+
+        // Solo activar en pantallas pequeñas
+        function handleToggle() {
+            if (nav.style.display === 'flex' || nav.style.display === 'block') {
+                nav.style.display = 'none';
+            } else {
+                nav.style.display = 'flex';
+                nav.style.flexDirection = 'column';
+                nav.style.alignItems = 'center';
+                nav.style.gap = '15px';
+                nav.style.marginTop = '1rem';
+            }
+        }
+
+        toggleBtn.addEventListener('click', handleToggle);
+
+        // Oculta el menú al cambiar a modo desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                nav.style.display = 'flex';
+                nav.style.flexDirection = 'row';
+            } else {
+                nav.style.display = 'none';
+            }
+        });
+    });
+</script>

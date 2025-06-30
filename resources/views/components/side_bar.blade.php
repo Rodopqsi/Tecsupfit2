@@ -1,9 +1,9 @@
 <body>
 
-    <section class="side-bar">
+    <nav class="side-bar">
         <div class="contenedor-logo">
             <a href="">
-                <svg width="172" height="93" viewBox="0 0 172 93" fill="none" xmlns="http://www.w3.org/2000/svg"
+                <svg width="172" height="93" viewBox="0 0 172 93" fill="none" xmlns="http://www.w3.org/2000/svg"More actions
                     xmlns:xlink="http://www.w3.org/1999 /xlink">
                     <rect width="276.593" height="93" fill="url(#pattern0_106_195)" />
                     <defs>
@@ -106,81 +106,88 @@
                 </div>
             </div>
         </div>
-    </section>
+    
+</nav>
 
 </body>
 <style>
     body {
-    display: flex;
     margin: 0;
-    flex-direction: row;
-    align-items: stretch; 
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
-    
 }
+
 
 .side-bar {
     background-color: black;
-    width: 350px;
+    width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: start;
-    flex-shrink: 0;
-    min-height: 100vh;
-    max-height:100%;
-    
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    box-sizing: border-box;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 
     .directorios {
-        margin-top: 4rem;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        align-self: center;
-    }
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
 
-    .contenedor-logo {
-        padding-top: 80px;
+.contenedor-logo {
+    padding: 0;
+}
+.contenedor-logo a {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
 
-    }
 
     .directorios-productos-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        color: white;
-        transition: all 0.3s ease;
-    }
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
 
-    .directorios-productos-link:hover {
-        transform: scale(1.05);
-    }
+    
+.directorios-productos-link:hover {
+    transform: scale(1.05);
+}
 
-    .directorios-productos-link p {
-        padding-top: 10px;
-    }
+.directorios-productos-link p {
+    margin: 0;
+}
 
     .Contenedor_general {
-        width: 100%;
-        height: auto;
-        background-color: #ffffff;
-        order: 2;
-    }
+    flex: 1;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    min-height: 100%;
+}
+
 
     .Configuraciones {
-        width: 200px;
-        font-family: Arial;
-    }
+    position: relative;
+}
 
     .configuraciones-cuenta {
-        background-color: transparent;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-    }
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
 
     .directorios-productos-link {
         display: flex;
@@ -191,28 +198,80 @@
     }
 
     .submenu {
-        display: none;
-        background-color: transparent;
-        padding-left: 20px;
-        flex-direction: column;
-    }
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: black;
+    flex-direction: column;
+    min-width: 180px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    z-index: 99;
+}
 
     .submenu a {
-        color: white;
-        display: block;
-        padding: 8px 0;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
+    padding: 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+}
 
     .submenu a:hover {
-        background-color: #555;
-        transform: scale(1.05);
+    background-color: #333;
+}
+    /* Estilo botón hamburguesa */
+.hamburger-btn {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background-color: black;
+    color: black;
+    border: none;
+    font-size: 2rem;
+    z-index: 50;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Responsive sidebar */
+@media (max-width: 768px) {
+    .side-bar {
+    flex-direction: column;
+    align-items: flex-start;
     }
+
+    .directorios {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+    margin-top: 1rem;
+    }
+
+  .submenu {
+    position: static;
+    width: 100%;
+  }
+}
+
 </style>
 <script>
     function toggleMenu() {
         const submenu = document.getElementById('submenu');
         submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
     }
+</script>
+<script>
+    function toggleMenu() {
+        const submenu = document.getElementById('submenu');
+        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    const toggleSidebar = document.getElementById('toggleSidebar');
+    const sidebar = document.querySelector('.side-bar');
+
+    toggleSidebar.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+    });
 </script>

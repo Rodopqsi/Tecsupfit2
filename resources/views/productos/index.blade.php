@@ -1,11 +1,13 @@
-<body class="display:flex;">
-    <div class="sidebar">
-        @extends('components.side_bar')
-    </div>
+<body>
+    <div style="display:block;" class="body">
+        @include('components.side_bar')
 
-<!-- Search Container -->
-<section class="Contenedor_general" style="background: blue; ">
-    <div class="search-container">
+    <!-- Search Container -->
+    <button id="menuToggle" class="md:hidden p-3 text-white bg-blue-600 fixed top-4 left-4 z-50 rounded">
+        <i class="fas fa-bars"></i>
+    </button>
+    <section class="Contenedor_general" style="background: white; display:block;">
+        <div class="search-container">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <form method="GET" action="{{ route('productos.index') }}" id="filterForm" style="flex: 1;">
                 <div class="search-bar">
@@ -474,7 +476,7 @@
         
         <!-- Pagination -->
     </div>
-    
+    </div>
 </section>
 @push('scripts')
 <script>

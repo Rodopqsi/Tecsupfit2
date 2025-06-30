@@ -3,9 +3,9 @@
 </head>
 
 <body class="flex bg-white text-black min-h-screen">
-  <div class="sidebar">
-    @extends('components.side_bar')
-  </div>
+
+    @include('components.side_bar')
+
 
   <section class="Contenedor_general ml-12 px-6 w-full">
     <h2 class="text-2xl font-bold text-black mb-6 mt-8" >Administrar Cupones</h2>
