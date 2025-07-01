@@ -12,7 +12,14 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @else
+            <!-- Fallback CSS -->
+            <link rel="stylesheet" href="{{ asset('css/fallback.css') }}">
+            <!-- Fallback JS -->
+            <script src="{{ asset('js/fallback.js') }}" defer></script>
+        @endif
     </head>
     <body class="font-sans text-gray-900 antialiased" >
         <div class=" pt-6 sm:pt-0" id="div_principal">
