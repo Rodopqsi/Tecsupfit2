@@ -170,7 +170,7 @@
 
     <div class="tabs">
         <a
-            href="{{ route('/') }}"
+            href="{{ url('/') }}"
             class="category-btn {{ !request('categoria') ? 'active' : '' }}"
         >
             TODOS
@@ -182,11 +182,11 @@
             >
                 {{ strtoupper($categoria->nombre) }}
             </a>
-        @endforeach 
+        @endforeach
     </div>
-<script>
-    
-</script>
+</div>
+
+
     <div class="contenedor-flex"> 
         @foreach($productosDelMes as $producto)
             <div class="product-card"><a href="{{ route('productos.show', $producto) }}" >
@@ -1673,12 +1673,6 @@ body {
     justify-content: center;
 }
 
-.product-card img {
-    max-width: 100%;
-    max-height: 188px;
-    object-fit: contain;
-}
-
 /* Cantidad y controles responsivos */
 .agregar-carrito {
     background: #A70608;
@@ -2108,7 +2102,7 @@ body {
     #chatbot-float-btn {
         width: 45px;
         height: 45px;
-        bottom: 15px;
+        bottom:  15px;
         right: 15px;
         font-size: 1.2rem;
     }

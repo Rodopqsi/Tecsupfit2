@@ -28,9 +28,6 @@
         <button type="button" class="category-btn">
             <i class="fas fa-filter"></i> Filtrar
         </button>
-        <button type="button" class="category-btn">
-            <i class="fas fa-file-export"></i> Exportar
-        </button>
         <button type="button" class="category-btn top-month" onclick="window.location.href='/'">
             <i class="fas fa-star" ></i> Top del mes
         </button>

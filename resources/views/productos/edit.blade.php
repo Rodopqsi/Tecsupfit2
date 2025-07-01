@@ -1,6 +1,9 @@
-<body>
-@extends('components.side_bar')    
-<section class="Contenedor_general">
+
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+@include('components.side_bar')
+
 <div class="container">
     <h1>Editar Producto</h1>
 
@@ -117,5 +120,3 @@
         <a href="{{ route('productos.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
-</section>
-</body>
