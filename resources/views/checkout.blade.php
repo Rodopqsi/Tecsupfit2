@@ -269,7 +269,7 @@ paypal.Buttons({
 </div>
 
 <footer class="mt-12">
-@include('components.footer')
+@extends('components.footer')
 </footer>
 
 </body>
