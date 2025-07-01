@@ -9782,6 +9782,221 @@ a.text-dark:hover, a.text-dark:focus {
   transition: background-color 0.3s ease; /* Transición suave */
 }
 
+}
+
+/* ===== RESPONSIVE STYLES FOR TECSUPFIT ===== */
+
+/* Mobile-first responsive styles */
+
+/* Custom productos section responsive styles */
+@media (max-width: 767.98px) {
+  .productos {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .producto {
+    width: 100%;
+  }
+  
+  /* Mobile topbar improvements */
+  .mobile-topbar .btn {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  .mobile-topbar .btn i {
+    font-size: 16px;
+  }
+  
+  /* Categories mobile grid */
+  .cat-item {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+  
+  .cat-item .overflow-hidden {
+    width: 80px !important;
+    height: 80px !important;
+    margin: 0 auto 10px;
+  }
+  
+  /* Make buttons more touch-friendly */
+  .btn {
+    min-height: 44px;
+    padding: 12px 16px;
+  }
+  
+  /* Improve carousel controls for touch */
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 50px;
+    opacity: 0.8;
+  }
+  
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .productos {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .producto {
+    width: 48%;
+  }
+}
+
+/* Large tablet/small desktop */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .productos {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .producto {
+    width: 31%;
+  }
+}
+
+/* Desktop styles remain as is - 4 columns */
+@media (min-width: 1200px) {
+  .productos {
+    gap: 20px;
+  }
+  
+  .producto {
+    width: 23%;
+  }
+}
+
+/* Responsive improvements for existing Bootstrap sections */
+
+/* Categories section responsive */
+@media (max-width: 767.98px) {
+  .container-fluid.pt-5 .row.px-xl-5.pb-3 {
+    margin: 0;
+    padding: 0 15px;
+  }
+  
+  .col-lg-3.col-md-4.col-sm-6 {
+    padding: 5px;
+  }
+}
+
+/* Product grid responsive improvements */
+@media (max-width: 767.98px) {
+  .product-item {
+    margin-bottom: 20px;
+  }
+  
+  .product-action {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .product-action .btn {
+    margin: 2px;
+    padding: 10px;
+  }
+}
+
+/* Footer responsive improvements */
+@media (max-width: 767.98px) {
+  .container-fluid.bg-dark .row.px-xl-5.pt-5 {
+    padding: 20px 15px;
+  }
+  
+  .col-lg-4.col-md-12.mb-5,
+  .col-lg-8.col-md-12 .col-md-4 {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .input-group {
+    flex-direction: column;
+  }
+  
+  .input-group .form-control {
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  
+  .input-group-append {
+    width: 100%;
+  }
+  
+  .input-group-append .btn {
+    width: 100%;
+    border-radius: 4px;
+  }
+  
+  .d-flex .btn-primary.btn-square {
+    margin: 5px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Navigation improvements for mobile */
+@media (max-width: 991.98px) {
+  .navbar-nav .nav-link {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .dropdown-menu {
+    position: static !important;
+    box-shadow: none;
+    border: none;
+    background-color: rgba(0,0,0,0.8);
+  }
+  
+  .dropdown-item {
+    padding: 12px 20px;
+    color: #fff;
+  }
+  
+  .dropdown-item:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (max-width: 991.98px) {
+  /* Larger touch targets */
+  a, button, .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better spacing for touch */
+  .navbar-nav .nav-item {
+    margin: 2px 0;
+  }
+  
+  /* Improved form controls */
+  .form-control {
+    height: 44px;
+    font-size: 16px;
+  }
+  
+  /* Better carousel indicators */
+  .carousel-indicators li {
+    width: 12px;
+    height: 12px;
+    margin: 0 6px;
+  }
+}
+
 .navbar-nav .nav-link:hover {
   background-color: #333; /* Fondo al pasar el mouse */
   color: #fff; /* Color del texto al pasar el mouse */

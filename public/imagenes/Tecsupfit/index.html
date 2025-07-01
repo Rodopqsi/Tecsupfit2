@@ -28,7 +28,8 @@
 
 <body>
     <!-- Topbar Start -->
-        <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
+    <!-- Desktop Topbar -->
+    <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
         <div class="col-lg-4">
             <img src="img/logo-principal.png" alt="TecsupFit Logo" class="img-fluid" style="max-height: 80px;">
         </div>
@@ -59,53 +60,112 @@
             </a>
         </div>
     </div>
+    
+    <!-- Mobile Topbar -->
+    <div class="container-fluid bg-light py-2 d-lg-none">
+        <div class="row align-items-center">
+            <div class="col-4">
+                <img src="img/logo-principal.png" alt="TecsupFit Logo" class="img-fluid" style="max-height: 50px;">
+            </div>
+            <div class="col-8 text-right">
+                <button class="btn btn-outline-dark" type="button" data-toggle="collapse" data-target="#mobile-search" aria-expanded="false" aria-controls="mobile-search">
+                    <i class="fa fa-search"></i>
+                </button>
+                <a href="cart.html" class="btn btn-outline-dark ml-2">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge badge-primary">0</span>
+                </a>
+                <a href="login.html" class="btn btn-outline-dark ml-2">
+                    <i class="fas fa-user"></i>
+                </a>
+            </div>
+        </div>
+        <!-- Mobile Search -->
+        <div class="collapse mt-2" id="mobile-search">
+            <form action="">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Encuentra tu producto aqui..." aria-label="Search">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <!-- Topbar End -->
 
 
     <!-- Navbar Start -->
-<!-- Navbar Start -->
 <div class="bg-dark mb-30">
-    <div class="d-flex align-items-center">
-        <!-- Categorías -->
-        <div style="width: 260px; background-color: #000;">
-            <a class="btn d-flex align-items-center justify-content-between w-100" data-toggle="collapse" href="#navbar-vertical" style="height: 65px; padding: 0 30px; background-color: #000;">
-                <h6 class="text-light m-0"><i class="fa fa-bars mr-2"></i>Categories</h6>
-                <i class="fa fa-angle-down text-light"></i>
-            </a>
-            <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 bg-light" id="navbar-vertical" style="width: 230px; z-index: 999;">
-                <div class="navbar-nav w-100">
-                    <a href="" class="nav-item nav-link">Creatinas</a>
-                    <a href="" class="nav-item nav-link">Quemadores de grasa</a>
-                    <a href="" class="nav-item nav-link">Proteinas</a>
-                    <a href="" class="nav-item nav-link">Barras energéticas</a>
-                    <a href="" class="nav-item nav-link">Ganadores de peso</a>
-                    <a href="" class="nav-item nav-link">Vitaminas y otros</a>
-                </div>
-            </nav>
-        </div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Categories Section - Desktop -->
+            <div class="col-lg-3 d-none d-lg-block" style="background-color: #000; padding: 0;">
+                <a class="btn d-flex align-items-center justify-content-between w-100 text-decoration-none" data-toggle="collapse" href="#navbar-vertical" style="height: 65px; padding: 0 30px; background-color: #000;">
+                    <h6 class="text-light m-0"><i class="fa fa-bars mr-2"></i>Categories</h6>
+                    <i class="fa fa-angle-down text-light"></i>
+                </a>
+                <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 bg-light" id="navbar-vertical" style="width: 230px; z-index: 999;">
+                    <div class="navbar-nav w-100">
+                        <a href="" class="nav-item nav-link">Creatinas</a>
+                        <a href="" class="nav-item nav-link">Quemadores de grasa</a>
+                        <a href="" class="nav-item nav-link">Proteinas</a>
+                        <a href="" class="nav-item nav-link">Barras energéticas</a>
+                        <a href="" class="nav-item nav-link">Ganadores de peso</a>
+                        <a href="" class="nav-item nav-link">Vitaminas y otros</a>
+                    </div>
+                </nav>
+            </div>
 
-        <!-- Menú centrado -->
-        <div class="flex-grow-1" style="background-color: #000;">
-            <nav class="navbar navbar-expand-lg navbar-dark py-3 py-lg-0 px-0 texal" style="background-color: #000; ">
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-center" id="navbarCollapse">
-                    <div class="navbar-nav py-0 text-center">
-                        <a href="index.html" class="nav-item nav-link active">Inicio</a>
-                        <a href="shop.html" class="nav-item nav-link">Productos</a>
-                        <a href="detail.html" class="nav-item nav-link">Promociones</a>
-                        <a href="detail.html" class="nav-item nav-link">Nosotros</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages <i class="fa fa-angle-down mt-1"></i></a>
-                            <div class="dropdown-menu bg-primary rounded-0 border-0 m-0">
-                                <a href="cart.html" class="dropdown-item">Shopping Cart</a>
-                                <a href="checkout.html" class="dropdown-item">Checkout</a>
+            <!-- Main Navigation -->
+            <div class="col-lg-9 col-12" style="background-color: #000;">
+                <nav class="navbar navbar-expand-lg navbar-dark py-3 py-lg-0 px-0" style="background-color: #000;">
+                    <!-- Mobile Categories Button -->
+                    <button class="btn btn-dark d-lg-none mr-3" type="button" data-toggle="collapse" data-target="#mobile-categories" aria-expanded="false" aria-controls="mobile-categories">
+                        <i class="fa fa-bars"></i> Categorías
+                    </button>
+                    
+                    <!-- Main Navigation Toggler -->
+                    <button type="button" class="navbar-toggler ml-auto" data-toggle="collapse" data-target="#navbarCollapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <!-- Main Navigation Menu -->
+                    <div class="collapse navbar-collapse justify-content-center" id="navbarCollapse">
+                        <div class="navbar-nav py-0 text-center">
+                            <a href="index.html" class="nav-item nav-link active">Inicio</a>
+                            <a href="shop.html" class="nav-item nav-link">Productos</a>
+                            <a href="detail.html" class="nav-item nav-link">Promociones</a>
+                            <a href="detail.html" class="nav-item nav-link">Nosotros</a>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages <i class="fa fa-angle-down mt-1"></i></a>
+                                <div class="dropdown-menu bg-primary rounded-0 border-0 m-0">
+                                    <a href="cart.html" class="dropdown-item">Shopping Cart</a>
+                                    <a href="checkout.html" class="dropdown-item">Checkout</a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Mobile Categories -->
+        <div class="collapse d-lg-none" id="mobile-categories">
+            <div class="bg-light border-top">
+                <div class="container-fluid py-2">
+                    <div class="row">
+                        <div class="col-6 mb-2"><a href="" class="btn btn-outline-dark btn-sm w-100">Creatinas</a></div>
+                        <div class="col-6 mb-2"><a href="" class="btn btn-outline-dark btn-sm w-100">Proteinas</a></div>
+                        <div class="col-6 mb-2"><a href="" class="btn btn-outline-dark btn-sm w-100">Quemadores de grasa</a></div>
+                        <div class="col-6 mb-2"><a href="" class="btn btn-outline-dark btn-sm w-100">Ganadores de peso</a></div>
+                        <div class="col-6 mb-2"><a href="" class="btn btn-outline-dark btn-sm w-100">Barras energéticas</a></div>
+                        <div class="col-6 mb-2"><a href="" class="btn btn-outline-dark btn-sm w-100">Vitaminas y otros</a></div>
+                    </div>
                 </div>
-            </nav>
+            </div>
         </div>
     </div>
 </div>
