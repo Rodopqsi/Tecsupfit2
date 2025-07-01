@@ -9,8 +9,6 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    nodejs \
-    npm \
     libpq-dev
 
 # Instalar extensiones PHP para PostgreSQL
@@ -27,13 +25,6 @@ COPY . .
 
 # Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
-
-# Instalar y compilar frontend
-WORKDIR /var/www/public/chatbot
-RUN npm install && npm run build && cp -r dist/* .
-
-# Volver al directorio principal
-WORKDIR /var/www
 
 # Exponer puerto
 EXPOSE 8080
