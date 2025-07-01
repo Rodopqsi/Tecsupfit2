@@ -22,11 +22,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Models\Cupon;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('index');
-})->name('home');
+Route::resource('/', DelmesController::class)->only(['index'])->names(['index' => 'home']);
 
-Route::resource('/', DelmesController::class);
+
 
 
 Route::middleware(['auth'])->group(function () {
@@ -44,7 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require _DIR_.'/auth.php';
 Route::get('/gracias', fn () => view('gracias'))->name('gracias');
 Route::get('/promociones', function () {
     $cupones = Cupon::where('stock', '>', 0)
