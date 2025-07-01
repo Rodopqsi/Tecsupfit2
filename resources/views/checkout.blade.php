@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Checkout</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="bg-white text-black">
@@ -83,6 +83,11 @@
       window.addEventListener('DOMContentLoaded', () => {
         const regionSelect = document.querySelector('select[name="region"]');
         const distritoSelect = document.querySelector('select[name="distrito"]');
+
+        if (!regionSelect || !distritoSelect) {
+          console.warn('Selectores de región o distrito no encontrados');
+          return;
+        }
 
         regionSelect.innerHTML = '<option value="">Selecciona una región</option>';
         for (const region in ubigeo) {
@@ -194,12 +199,22 @@
   document.addEventListener('DOMContentLoaded', function () {
     const radios = document.querySelectorAll('input[name="envio"]');
     const totalSpan = document.getElementById('total-a-pagar');
-    const totalBase = parseFloat(document.getElementById('total-base').value);
+    const totalBaseElement = document.getElementById('total-base');
+    
+    if (!totalSpan || !totalBaseElement) {
+      console.warn('Elementos necesarios no encontrados');
+      return;
+    }
+    
+    const totalBase = parseFloat(totalBaseElement.value);
 
     function actualizarTotal() {
-      const envio = parseFloat(document.querySelector('input[name="envio"]:checked').value);
+      const envioElement = document.querySelector('input[name="envio"]:checked');
+      if (!envioElement) return;
+      
+      const envio = parseFloat(envioElement.value);
       const total = totalBase + envio;
-      totalSpan.textContent = S/ ${total.toFixed(2)};
+      totalSpan.textContent = `S/ ${total.toFixed(2)}`;
     }
 
     radios.forEach(radio => {
@@ -219,9 +234,17 @@ paypal.Buttons({
     allowed: [paypal.FUNDING.PAYPAL, paypal.FUNDING.CARD]
   },
   createOrder: function(data, actions) {
-  const totalBase = parseFloat(document.getElementById('total-base').value);
-  const envio = parseFloat(document.querySelector('input[name="envio"]:checked').value);
-  const total = (totalBase + envio).toFixed(2);
+    const totalBaseElement = document.getElementById('total-base');
+    const envioElement = document.querySelector('input[name="envio"]:checked');
+    
+    if (!totalBaseElement || !envioElement) {
+      console.error('Elementos necesarios no encontrados para el pago');
+      return;
+    }
+    
+    const totalBase = parseFloat(totalBaseElement.value);
+    const envio = parseFloat(envioElement.value);
+    const total = (totalBase + envio).toFixed(2);
 
   return actions.order.create({
     purchase_units: [{
