@@ -13,42 +13,38 @@ use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
+    // Muestra la lista de productos, solo si eres admin
     public function index(Request $request)
     {
         if (!auth()->user()?->is_admin) {
-        abort(403);
+            abort(403); // Si no eres admin, ni lo intentes
         }
         $query = Producto::with(['categoria', 'marca', 'objetivo', 'tamano', 'sabor', 'stock']);
 
+        // Filtros varios, por si buscas algo específico
         if ($request->filled('search')) {
             $query->search($request->search);
         }
-
         if ($request->filled('categoria')) {
             $query->byCategoria($request->categoria);
         }
-
         if ($request->filled('marca')) {
             $query->byMarca($request->marca);
         }
-
         if ($request->filled('objetivo')) {
             $query->byObjetivo($request->objetivo);
         }
-
         if ($request->filled('tamano')) {
             $query->byTamano($request->tamano);
         }
-
         if ($request->filled('sabor')) {
             $query->bySabor($request->sabor);
         }
-
         if ($request->filled('precio_min') && $request->filled('precio_max')) {
             $query->byPrecio($request->precio_min, $request->precio_max);
         }
 
-        $productos = $query->paginate(9);
+        $productos = $query->paginate(9); // Paginado, para no ver todo de golpe
         $categorias = Categoria::all();
         $marcas = Marca::all();
         $objetivos = Objetivo::all();
@@ -58,10 +54,11 @@ class ProductoController extends Controller
         return view('productos.index', compact('productos', 'categorias', 'marcas', 'objetivos', 'tamanos', 'sabores'));
     }
 
+    // Formulario para crear producto, solo admins
     public function create()
     {
         if (!auth()->user()?->is_admin) {
-        abort(403);
+            abort(403);
         }
         $categorias = Categoria::all();
         $marcas = Marca::all();
@@ -71,11 +68,13 @@ class ProductoController extends Controller
         return view('productos.create', compact('categorias', 'marcas', 'objetivos', 'tamanos', 'sabores'));
     }
 
+    // Guarda el producto nuevo
     public function store(Request $request)
     {
         if (!auth()->user()?->is_admin) {
-        abort(403);
+            abort(403);
         }
+        // Validación básica, no te pases de listo
         $request->validate([
             'nombre' => 'required|string|max:255',
             'precio_nuevo' => 'required|numeric|min:0',
@@ -91,16 +90,17 @@ class ProductoController extends Controller
             'stock_minimo' => 'required|integer|min:0',
         ]);
 
-        // Crear stock
+        // Primero creamos el stock
         $stock = Stock::create([
             'cantidad' => $request->stock_cantidad,
             'stock_minimo' => $request->stock_minimo,
         ]);
 
-        // Crear producto
+        // Ahora el producto, con el stock recién creado
         $producto = new Producto($request->except(['stock_cantidad', 'stock_minimo']));
         $producto->stock_id = $stock->id;
 
+        // Si subiste imagen, la guardamos
         if ($request->hasFile('imagen')) {
             $imagen = $request->file('imagen');
             $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension();
@@ -113,19 +113,21 @@ class ProductoController extends Controller
         return redirect()->route('productos.index')->with('success', 'Producto creado exitosamente.');
     }
 
+    // Muestra un producto en detalle
     public function show(Producto $producto)
     {
         $producto->load(['categoria', 'marca', 'objetivo', 'tamano', 'sabor', 'stock']);
-    
+
+        // Productos relacionados, por si quieres ver más
         $relacionados = Producto::where('categoria_id', $producto->categoria_id)
             ->where('id', '!=', $producto->id)
             ->take(10)
             ->get();
-    
+
         return view('productos.show', compact('producto', 'relacionados'));
     }
 
-
+    // Formulario para editar producto
     public function edit(Producto $producto)
     {
         $categorias = Categoria::all();
@@ -137,6 +139,7 @@ class ProductoController extends Controller
         return view('productos.edit', compact('producto', 'categorias', 'marcas', 'objetivos', 'tamanos', 'sabores'));
     }
 
+    // Actualiza el producto
     public function update(Request $request, Producto $producto)
     {
         $request->validate([
@@ -154,6 +157,7 @@ class ProductoController extends Controller
             'stock_minimo' => 'required|integer|min:0',
         ]);
 
+        // Si no tiene stock, lo creamos
         if (!$producto->relationLoaded('stock')) {
             $producto->load('stock');
         }
@@ -167,6 +171,7 @@ class ProductoController extends Controller
             $producto->save();
             $producto->load('stock');
         } else {
+            // Si ya tiene, solo actualizamos
             $producto->stock->update([
                 'cantidad' => $request->stock_cantidad,
                 'stock_minimo' => $request->stock_minimo,
@@ -175,8 +180,8 @@ class ProductoController extends Controller
 
         $producto->fill($request->except(['stock_cantidad', 'stock_minimo']));
 
+        // Si subiste nueva imagen, borramos la vieja y guardamos la nueva
         if ($request->hasFile('imagen')) {
-            // Eliminar imagen anterior si existe
             if ($producto->imagen && file_exists(public_path('images/productos/' . $producto->imagen))) {
                 unlink(public_path('images/productos/' . $producto->imagen));
             }
@@ -192,15 +197,18 @@ class ProductoController extends Controller
         return redirect()->route('productos.index')->with('success', 'Producto actualizado exitosamente.');
     }
 
+    // Borra el producto (y su imagen y stock)
     public function destroy(Producto $producto)
     {
         try {
             if (!$producto->relationLoaded('stock')) {
                 $producto->load('stock');
             }
+            // Borramos la imagen si existe
             if ($producto->imagen && file_exists(public_path('images/productos/' . $producto->imagen))) {
                 unlink(public_path('images/productos/' . $producto->imagen));
             }
+            // Borramos el stock también
             if ($producto->stock) {
                 $producto->stock->delete();
             }
@@ -212,15 +220,15 @@ class ProductoController extends Controller
         }
     }
 
+    // Cambia si el producto es "del mes" o no
     public function toggleDelMes(Producto $producto)
     {
         $producto->update(['es_delmes' => !$producto->es_delmes]);
-        
         $mensaje = $producto->es_delmes ? 'Producto agregado a Del Mes' : 'Producto removido de Del Mes';
-        
         return redirect()->back()->with('success', $mensaje);
     }
 
+    // Comprar producto (baja stock y registra venta)
     public function comprar(Request $request, Producto $producto)
     {
         $request->validate([
@@ -229,19 +237,20 @@ class ProductoController extends Controller
 
         $cantidad = $request->cantidad;
 
-        // Cargar la relación stock si no está cargada
+        // Cargamos el stock si no está
         if (!$producto->relationLoaded('stock')) {
             $producto->load('stock');
         }
 
+        // Si no hay suficiente stock, ni lo intentes
         if (!$producto->stock || $producto->stock->cantidad < $cantidad) {
             return redirect()->back()->with('error', 'Stock insuficiente.');
         }
 
-        // Actualizar stock
+        // Bajamos el stock
         $producto->stock->decrement('cantidad', $cantidad);
 
-        // Registrar venta (asumiendo que tienes un modelo Venta)
+        // Registramos la venta si el modelo lo permite
         if (method_exists($producto, 'ventas')) {
             $producto->ventas()->create([
                 'cantidad' => $cantidad,
@@ -250,7 +259,7 @@ class ProductoController extends Controller
             ]);
         }
 
-        // Incrementar ventas del mes si el campo existe
+        // Sumamos a las ventas del mes si existe el campo
         if ($producto->getConnection()->getSchemaBuilder()->hasColumn($producto->getTable(), 'ventas_mes')) {
             $producto->increment('ventas_mes', $cantidad);
         }

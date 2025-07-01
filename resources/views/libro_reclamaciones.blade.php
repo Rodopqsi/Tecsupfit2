@@ -404,7 +404,7 @@
         document.getElementById('reclamacionForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Simulación de envío
+            
             const submitBtn = document.querySelector('.submit-btn');
             const originalText = submitBtn.innerHTML;
             
@@ -415,21 +415,21 @@
                 document.getElementById('successMessage').style.display = 'block';
                 document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
                 
-                // Reset form
+                
                 this.reset();
                 
-                // Reset button
+                
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
                 
-                // Hide success message after 5 seconds
+                
                 setTimeout(() => {
                     document.getElementById('successMessage').style.display = 'none';
                 }, 5000);
             }, 2000);
         });
 
-        // Validación en tiempo real del número de documento
+    
         document.getElementById('numeroDocumento').addEventListener('input', function(e) {
             const tipoDoc = document.getElementById('tipoDocumento').value;
             const numero = e.target.value;
@@ -439,7 +439,7 @@
             }
         });
 
-        // Auto-formateo de teléfono
+        
         document.getElementById('telefono').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length > 9) {

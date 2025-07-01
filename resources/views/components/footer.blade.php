@@ -341,7 +341,6 @@ footer .socials a:hover {
     font-size: 12px;
 }
 
-/* ===== RESPONSIVE STYLES ===== */
 
 /* Tablets grandes - hasta 1200px */
 @media (max-width: 1200px) {
@@ -462,7 +461,7 @@ footer .socials a:hover {
     }
 }
 
-/* Móviles - hasta 480px */
+/* celulares - hasta 480px */
 @media (max-width: 480px) {
     .footer-container {
         padding: 20px 15px 30px;
@@ -531,7 +530,7 @@ footer .socials a:hover {
     }
 }
 
-/* Móviles muy pequeños - hasta 320px */
+/* celus muy pequeños - hasta 320px */
 @media (max-width: 320px) {
     .footer-container {
         padding: 15px 10px 25px;
@@ -572,7 +571,6 @@ footer .socials a:hover {
     }
 }
 
-/* Mejoras adicionales para la experiencia móvil */
 @media (max-width: 768px) {
     .subscribe-form input:hover,
     .subscribe-form input:focus {
@@ -587,7 +585,7 @@ footer .socials a:hover {
         color: #ccc;
     }
     
-    /* Mejorar el espaciado del SVG en móviles */
+    
     .footer-links svg {
         max-width: 100px;
         height: auto;

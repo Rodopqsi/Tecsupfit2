@@ -12,8 +12,8 @@
 
     <div class="py-6 max-w-7xl mx-auto">
       <a href="{{ route('cupones.create') }}"
-         class="inline-block mb-6 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow transition transform hover:scale-105">
-         Crear Cupón
+          class="inline-block mb-6 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow transition transform hover:scale-105">
+          Crear Cupón
       </a>
 
       <div class="overflow-x-auto bg-white border border-gray-300 shadow-lg rounded-lg">
@@ -44,7 +44,7 @@
                 <td class="p-3">{{ $cupon->fecha_inicio }}<br>{{ $cupon->fecha_fin }}</td>
                 <td class="p-3 text-center space-x-2">
                   <a href="{{ route('cupones.edit', $cupon->id) }}"
-                     class="inline-block px-3 py-1 bg-black hover:bg-gray-800 text-white rounded text-sm transition">
+                      class="inline-block px-3 py-1 bg-black hover:bg-gray-800 text-white rounded text-sm transition">
                     Editar
                   </a>
                   <form method="POST" action="{{ route('cupones.destroy', $cupon->id) }}" class="inline-block"

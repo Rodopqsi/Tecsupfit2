@@ -361,7 +361,7 @@
                 <div class="product-image">
                     @if($producto->imagen)
                         <img src="{{ asset('images/productos/' . $producto->imagen) }}" 
-                             alt="{{ $producto->nombre }}">
+                                alt="{{ $producto->nombre }}">
                     @else
                         <div class="d-flex align-items-center justify-content-center h-100 bg-light">
                             <i class="fas fa-image fa-3x text-muted"></i>
@@ -416,7 +416,7 @@
                     <form action="{{ route('productos.comprar', $producto) }}" method="POST" class="purchase-form">
                         @csrf
                         <input type="number" name="cantidad" placeholder="Cant." min="1" 
-                               max="{{ $producto->stock->cantidad }}" required>
+                                max="{{ $producto->stock->cantidad }}" required>
                         <button type="submit" class="btn btn-primary btn-sm">Comprar</button>
                     </form>
                 </div>

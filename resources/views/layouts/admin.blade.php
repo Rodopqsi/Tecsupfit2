@@ -13,13 +13,13 @@
     <style>
         
     .sidebar {
-      width: var(--sidebar-width);
-      background-color: var(--primary-color);
-      color: white;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      transition: all 0.3s;
+        width: var(--sidebar-width);
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s;
     }
     
     .sidebar-header {

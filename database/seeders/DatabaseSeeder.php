@@ -11,9 +11,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // Para PostgreSQL, usamos TRUNCATE CASCADE en lugar de FOREIGN_KEY_CHECKS
-        
-        // Limpiar tablas existentes (en orden correcto por dependencias)
         $tables = [
             'ventas', 'opinions', 'carrito_productos', 'orden_productos', 'ordenes',
             'productos', 'stocks', 'reclamaciones', 'cupones', 'sessions',
@@ -27,7 +24,6 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Reiniciar secuencias de PostgreSQL
         $this->resetSequences();
 
         // 1. USERS

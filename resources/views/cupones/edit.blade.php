@@ -2,11 +2,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex bg-white text-black min-h-screen">
-  <div class="sidebar">
-    @extends('components.side_bar')
-  </div>
+@include('components.side_bar')
 
-  <section class="Contenedor_general ml-12 px-6 w-full">
+
+<section class="Contenedor_general ml-12 px-6 w-full">
 <div class="max-w-3xl mx-auto mt-10 p-6 sm:p-10 bg-gradient-to-br from-blue-100 to-white shadow-xl rounded-2xl">
     <h2 class="text-3xl font-extrabold text-white-800 mb-8 text-center">Editar Cupón</h2>
 

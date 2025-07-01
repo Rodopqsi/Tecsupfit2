@@ -177,7 +177,7 @@
         </a>
         @foreach($categorias as $categoria)
             <a
-                href="{{ route('home', ['categoria' => $categoria->id]) }}"
+                href="{{ url('/?categoria=' . $categoria->id) }}"
                 class="category-btn {{ request('categoria') == $categoria->id ? 'active' : '' }}"
             >
                 {{ strtoupper($categoria->nombre) }}

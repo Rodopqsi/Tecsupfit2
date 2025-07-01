@@ -73,7 +73,7 @@
     </div>
     @endif
     <div>
-        <a href="mis-pedidos" style="background-color:red;">Ver Pedidos</a>
+        <a href="mis-pedidos" style="background-color:transparent; border-radius:8px; padding:8px 16px; border:1px solid #ccc; display:inline-block;">Ver Pedidos</a>
     </div>
 </div>
 

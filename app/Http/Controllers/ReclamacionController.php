@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 
 class ReclamacionController extends Controller
 {
+    // Muestra la lista de reclamos con estadísticas
     public function index()
     {
         $reclamaciones = Reclamacion::recientes()
@@ -21,16 +22,20 @@ class ReclamacionController extends Controller
             'resueltas' => Reclamacion::where('estado', 'resuelto')->count(),
         ];
 
+        // Retorna la vista con los datos
         return view('reclamaciones.index', compact('reclamaciones', 'estadisticas'));
     }
 
+    // Solo muestra el formulario para crear un reclamo
     public function create()
     {
         return view('reclamaciones.create');
     }
 
+    // Guarda el reclamo nuevo
     public function store(Request $request)
     {
+        // Validando los datos, no te olvides de esto
         $validator = Validator::make($request->all(), [
             'tipo_documento' => 'required|in:dni,ce,pasaporte,ruc',
             'numero_documento' => 'required|string|max:20',
@@ -50,6 +55,7 @@ class ReclamacionController extends Controller
             'in' => 'El valor seleccionado para :attribute no es válido.',
         ]);
 
+        // Si algo está mal, te lo digo en JSON
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -58,9 +64,10 @@ class ReclamacionController extends Controller
         }
 
         try {
+            // Guardando el reclamo en la base de datos
             $reclamacion = Reclamacion::create($request->all());
                 
-
+            // Mandando correo de confirmación (sí, automático)
             Mail::to($reclamacion->email)->send(new \App\Mail\ReclamacionRecibida($reclamacion));
                 
             return response()->json([
@@ -69,6 +76,7 @@ class ReclamacionController extends Controller
                 'data' => $reclamacion
             ]);
         } catch (\Exception $e) {
+            // Algo salió mal, avísale al usuario
             return response()->json([
                 'success' => false,
                 'message' => 'Error al procesar el reclamo. Por favor, intenta nuevamente.'
@@ -77,11 +85,13 @@ class ReclamacionController extends Controller
 
     }
 
+    // Muestra un reclamo específico
     public function show(Reclamacion $reclamacion)
     {
         return view('reclamaciones.show', compact('reclamacion'));
     }
 
+    // Actualiza el estado del reclamo (por ejemplo: pendiente, resuelto, etc)
     public function updateEstado(Request $request, Reclamacion $reclamacion)
     {
         $request->validate([
@@ -89,6 +99,7 @@ class ReclamacionController extends Controller
             'respuesta_empresa' => 'nullable|string'
         ]);
 
+        // Cambiando el estado y guardando la respuesta
         $reclamacion->update([
             'estado' => $request->estado,
             'respuesta_empresa' => $request->respuesta_empresa,
@@ -98,6 +109,7 @@ class ReclamacionController extends Controller
         return redirect()->back()->with('success', 'Estado actualizado correctamente.');
     }
 
+    // Elimina un reclamo (ojo, esto no se puede deshacer)
     public function destroy(Reclamacion $reclamacion)
     {
         try {
@@ -115,10 +127,12 @@ class ReclamacionController extends Controller
         }
     }
 
+    // Busca reclamos según filtros (bien útil)
     public function buscar(Request $request)
     {
         $query = Reclamacion::query();
 
+        // Filtros varios, para que encuentres lo que buscas
         if ($request->filled('numero_documento')) {
             $query->where('numero_documento', 'like', '%' . $request->numero_documento . '%');
         }
@@ -141,6 +155,7 @@ class ReclamacionController extends Controller
 
         $reclamaciones = $query->recientes()->paginate(10);
 
+        // Retorna la vista con los resultados filtrados
         return view('reclamaciones.index', compact('reclamaciones'));
     }
 }
