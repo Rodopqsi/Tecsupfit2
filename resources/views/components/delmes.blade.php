@@ -1,5 +1,5 @@
 <h2 class="h">Productos del Mes</h2>
-<a href="{{ route('index') }}" 
+<a href="{{ route('home') }}" 
                 class="category-btn {{ !request('categoria') ? 'active' : '' }}">
                 TODOS
             </a>

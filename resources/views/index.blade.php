@@ -170,14 +170,14 @@
 
     <div class="tabs">
         <a
-            href="{{ route('index') }}"
+            href="{{ route('home') }}"
             class="category-btn {{ !request('categoria') ? 'active' : '' }}"
         >
             TODOS
         </a>
         @foreach($categorias as $categoria)
             <a
-                href="{{ route('index', ['categoria' => $categoria->id]) }}"
+                href="{{ route('home', ['categoria' => $categoria->id]) }}"
                 class="category-btn {{ request('categoria') == $categoria->id ? 'active' : '' }}"
             >
                 {{ strtoupper($categoria->nombre) }}
@@ -580,7 +580,7 @@
                         <div class="categoria">
                             <p>PROTEINAS</p>
                             <img
-                                src="imagenes/Proteinas/Whey_Protein_Powder_for_Women_Vanilla_Powder_-_Low_Carb_Gluten-Free_Grass-Fed_-proteinaFrente-removebg-preview.png"
+                                src="imagenes/Proteinas/Whey_Protein_Powder_for_Women_Vanilla_Powder_-Low_Carb_Gluten-Free_Grass-Fed-proteinaFrente-removebg-preview.png"
                                 alt=""
                             />
                         </div>
@@ -813,7 +813,7 @@
         top: 400px;
     }
 
-    /*seccion de productos*/
+    /seccion de productos/
     .head-productos {
         display: flex;
         flex-direction: column;
@@ -1015,7 +1015,7 @@
         border-radius: 5px;
         transition: width 0.4s;
     }
-    /*Carrucel-2*/
+    /Carrucel-2/
     .carrusel-container {
         width: 100%;
         overflow: hidden;
@@ -1051,7 +1051,7 @@
         }
     }
 
-    /*CATEGORIAS*/
+    /CATEGORIAS/
     .nuestra-categoria {
         margin-top: 12rem;
         padding-top: 2rem;
@@ -1124,7 +1124,7 @@
         color: white;
     }
 
-    /*OBJETIVOS*/
+    /OBJETIVOS/
     .Objetivos {
         margin-top: 9rem;
     }
@@ -1215,7 +1215,7 @@
         padding-left: 1.5rem;
     }
 
-    /*OPINIONES*/
+    /OPINIONES/
     .opiniones-clientes {
         margin: 40px 0 30px 0;
         background: #fafafa;
@@ -1328,7 +1328,7 @@
         }
     }
 
-    /*OFERTAS*/
+    /OFERTAS/
 
     .ofertas {
         background: white;
@@ -1402,7 +1402,7 @@
         }
     }
 
-    /*SEPARADOR*/
+    /SEPARADOR/
     .separador {
         background-color: #a70608;
         width: 100%;
@@ -1423,7 +1423,7 @@
         line-height: normal;
     }
 
-    /*FOOTER*/
+    /FOOTER/
 
     footer {
         background-color: #000;
@@ -2208,6 +2208,7 @@ body {
     }
 }
 
+/* Pantallas extra grandes */
 @media screen and (min-width: 1600px) {
     .contenedor-flex {
         grid-template-columns: repeat(5, 1fr);

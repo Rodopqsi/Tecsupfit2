@@ -4,7 +4,7 @@
 <div class="container py-5" style="display:flex; flex-direction:column;padding-top:7rem; align-items:center; background-color:white; min-height:900px;">
     <h2 class="mb-4 text-center">Libro de Reclamaciones</h2>
 
-    <form method="POST" action="{{ route('index') }}" id="reclamacionForm">
+    <form method="POST" action="{{ route('home') }}" id="reclamacionForm">
         @csrf
 
         <div class="row mb-3" style="display:flex;">

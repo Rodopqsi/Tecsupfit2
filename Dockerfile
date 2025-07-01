@@ -36,4 +36,5 @@ RUN mkdir -p public/build/assets && \
 EXPOSE 8080
 
 # Comando de inicio
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8080
+# Al final del Dockerfile, en la sección CMD
+CMD php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=8080

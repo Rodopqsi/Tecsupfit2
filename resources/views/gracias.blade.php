@@ -63,10 +63,10 @@
       </div>
     @endif
 
-    <a href="{{ route('home') }}"
-       class="mt-8 inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition duration-300">
-      Volver al inicio
-    </a>
+    <a href="{{ route('home') }}" class="btn btn-primary">Volver al inicio</a>
+
+
+
   </div>
 
 </body>
