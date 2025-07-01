@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require _DIR_.'/auth.php';
+require __DIR__.'/auth.php';
 Route::get('/gracias', fn () => view('gracias'))->name('gracias');
 Route::get('/promociones', function () {
     $cupones = Cupon::where('stock', '>', 0)
