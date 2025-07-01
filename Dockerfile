@@ -26,6 +26,9 @@ COPY . .
 # Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
+# Crear directorio build y manifest vacío para Vite
+RUN mkdir -p public/build && echo '{}' > public/build/manifest.json
+
 # Exponer puerto
 EXPOSE 8080
 
