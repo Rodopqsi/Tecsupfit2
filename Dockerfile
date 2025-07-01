@@ -26,8 +26,11 @@ COPY . .
 # Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Crear directorio build y manifest vacío para Vite
-RUN mkdir -p public/build && echo '{}' > public/build/manifest.json
+# Crear directorio build y manifest con la estructura correcta
+RUN mkdir -p public/build/assets && \
+    echo '{"resources/css/app.css":{"file":"assets/app-C2HWaN36.css","src":"resources/css/app.css","isEntry":true},"resources/js/app.js":{"file":"assets/app-Bf4POITK.js","name":"app","src":"resources/js/app.js","isEntry":true}}' > public/build/manifest.json && \
+    touch public/build/assets/app-C2HWaN36.css && \
+    touch public/build/assets/app-Bf4POITK.js
 
 # Exponer puerto
 EXPOSE 8080
