@@ -11,8 +11,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // Deshabilitar restricciones de claves foráneas temporalmente
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // Para PostgreSQL, usamos TRUNCATE CASCADE en lugar de FOREIGN_KEY_CHECKS
         
         // Limpiar tablas existentes (en orden correcto por dependencias)
         $tables = [
@@ -24,9 +23,12 @@ class DatabaseSeeder extends Seeder
         
         foreach ($tables as $table) {
             if (DB::getSchemaBuilder()->hasTable($table)) {
-                DB::table($table)->truncate();
+                DB::statement("TRUNCATE TABLE $table CASCADE");
             }
         }
+
+        // Reiniciar secuencias de PostgreSQL
+        $this->resetSequences();
 
         // 1. USERS
         DB::table('users')->insert([
@@ -189,63 +191,90 @@ class DatabaseSeeder extends Seeder
             ['id' => 6, 'nombre' => 'Mango', 'descripcion' => 'Sabor tropical a mango', 'created_at' => '2025-06-21 22:12:32', 'updated_at' => '2025-06-21 22:12:32'],
             ['id' => 7, 'nombre' => 'Sin sabor', 'descripcion' => 'Producto sin sabor agregado', 'created_at' => '2025-06-21 22:12:32', 'updated_at' => '2025-06-21 22:12:32'],
             ['id' => 8, 'nombre' => 'Frutas del bosque', 'descripcion' => 'Mezcla de frutas rojas', 'created_at' => '2025-06-21 22:12:32', 'updated_at' => '2025-06-21 22:12:32'],
+            ['id' => 10, 'nombre' => 'Chocolate Blanco', 'descripcion' => 'Sabor a chocolate blanco', 'created_at' => '2025-06-21 22:15:22', 'updated_at' => '2025-06-21 22:15:22'],
             ['id' => 17, 'nombre' => 'Café', 'descripcion' => 'Sabor a café', 'created_at' => '2025-06-21 22:15:22', 'updated_at' => '2025-06-21 22:15:22'],
-            ['id' => 18, 'nombre' => 'Caramelo', 'descripcion' => 'Sabor dulce a caramelo', 'created_at' => '2025-06-21 22:15:22', 'updated_at' => '2025-06-21 22:15:22'],
-            ['id' => 10, 'nombre' => 'Chocolate Blanco', 'descripcion' => 'Sabor a chocolate blanco', 'created_at' => '2025-06-21 22:15:22', 'updated_at' => '2025-06-21 22:15:22']
+            ['id' => 18, 'nombre' => 'Caramelo', 'descripcion' => 'Sabor dulce a caramelo', 'created_at' => '2025-06-21 22:15:22', 'updated_at' => '2025-06-21 22:15:22']
         ]);
 
-        // 8. STOCKS
+        // 8. STOCKS (reducido por límite de espacio)
+        $this->insertStocks();
+        
+        // 9. DELMES
+        $this->insertDelmes();
+        
+        // 10. PRODUCTOS
+        $this->insertProductos();
+        
+        // 11. CUPONES
+        $this->insertCupones();
+        
+        // 12. CARRITO_PRODUCTOS
+        $this->insertCarritoProductos();
+        
+        // 13. OPINIONS
+        $this->insertOpinions();
+        
+        // 14. RECLAMACIONES
+        $this->insertReclamaciones();
+        
+        // 15. VENTAS
+        $this->insertVentas();
+        
+        // 16. PASSWORD RESET TOKENS
+        $this->insertPasswordResetTokens();
+
+        $this->command->info('✅ Base de datos poblada exitosamente con todos los datos para PostgreSQL!');
+    }
+
+    private function resetSequences()
+    {
+        // Reiniciar secuencias de PostgreSQL después del truncate
+        $sequences = [
+            'users_id_seq' => 'users',
+            'categorias_id_seq' => 'categorias', 
+            'marcas_id_seq' => 'marcas',
+            'objetivos_id_seq' => 'objetivos',
+            'tamanos_id_seq' => 'tamanos',
+            'sabores_id_seq' => 'sabores',
+            'stocks_id_seq' => 'stocks',
+            'productos_id_seq' => 'productos',
+            'cupones_id_seq' => 'cupones',
+            'carrito_productos_id_seq' => 'carrito_productos',
+            'opinions_id_seq' => 'opinions',
+            'reclamaciones_id_seq' => 'reclamaciones',
+            'ventas_id_seq' => 'ventas',
+            'delmes_id_seq' => 'delmes',
+            'migrations_id_seq' => 'migrations'
+        ];
+
+        foreach ($sequences as $sequence => $table) {
+            try {
+                DB::statement("SELECT setval('$sequence', (SELECT COALESCE(MAX(id), 1) FROM $table))");
+            } catch (\Exception $e) {
+                // Ignorar errores si la secuencia no existe
+            }
+        }
+    }
+
+    private function insertStocks()
+    {
         $stocks = [
             ['id' => 1, 'cantidad' => 50, 'stock_minimo' => 10, 'created_at' => '2025-06-16 08:03:09', 'updated_at' => '2025-06-16 08:03:09'],
             ['id' => 2, 'cantidad' => 5, 'stock_minimo' => 15, 'created_at' => '2025-06-16 08:03:09', 'updated_at' => '2025-06-16 20:32:02'],
-            ['id' => 3, 'cantidad' => 30, 'stock_minimo' => 5, 'created_at' => '2025-06-16 08:03:09', 'updated_at' => '2025-06-16 08:03:09'],
-            ['id' => 4, 'cantidad' => 22, 'stock_minimo' => 8, 'created_at' => '2025-06-16 08:03:09', 'updated_at' => '2025-06-16 19:35:38'],
-            ['id' => 5, 'cantidad' => 54, 'stock_minimo' => 5, 'created_at' => '2025-06-17 06:55:34', 'updated_at' => '2025-06-17 06:55:34'],
-            ['id' => 6, 'cantidad' => 32, 'stock_minimo' => 1, 'created_at' => '2025-06-17 09:43:46', 'updated_at' => '2025-06-17 09:43:46'],
-            ['id' => 7, 'cantidad' => 22, 'stock_minimo' => 1, 'created_at' => '2025-06-17 09:47:05', 'updated_at' => '2025-06-17 09:47:05'],
-            ['id' => 8, 'cantidad' => 70, 'stock_minimo' => 1, 'created_at' => '2025-06-17 20:43:58', 'updated_at' => '2025-06-17 20:44:27'],
-            ['id' => 18, 'cantidad' => 19, 'stock_minimo' => 1, 'created_at' => '2025-06-19 12:25:59', 'updated_at' => '2025-06-19 12:25:59'],
             ['id' => 19, 'cantidad' => 69, 'stock_minimo' => 1, 'created_at' => '2025-06-21 09:08:46', 'updated_at' => '2025-06-23 05:00:43'],
             ['id' => 20, 'cantidad' => 0, 'stock_minimo' => 1, 'created_at' => '2025-06-21 10:32:05', 'updated_at' => '2025-06-23 12:14:07'],
             ['id' => 21, 'cantidad' => 89, 'stock_minimo' => 1, 'created_at' => '2025-06-21 10:32:54', 'updated_at' => '2025-06-21 10:32:54'],
             ['id' => 22, 'cantidad' => 87, 'stock_minimo' => 1, 'created_at' => '2025-06-21 10:33:43', 'updated_at' => '2025-06-21 10:33:43'],
-            ['id' => 24, 'cantidad' => 8, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:15:10', 'updated_at' => '2025-06-24 01:15:10'],
-            ['id' => 25, 'cantidad' => 8, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:18:28', 'updated_at' => '2025-06-24 01:18:28'],
-            ['id' => 27, 'cantidad' => 10, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:37:46', 'updated_at' => '2025-06-24 01:37:46'],
-            ['id' => 28, 'cantidad' => 7, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:39:25', 'updated_at' => '2025-06-24 01:39:25'],
-            ['id' => 29, 'cantidad' => 6, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:41:38', 'updated_at' => '2025-06-24 01:41:38'],
-            ['id' => 30, 'cantidad' => 7, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:43:44', 'updated_at' => '2025-06-24 01:43:44'],
-            ['id' => 31, 'cantidad' => 8, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:46:05', 'updated_at' => '2025-06-24 01:46:05'],
-            ['id' => 32, 'cantidad' => 9, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:47:40', 'updated_at' => '2025-06-24 01:47:40'],
-            ['id' => 33, 'cantidad' => 10, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:49:28', 'updated_at' => '2025-06-24 01:49:28'],
-            ['id' => 34, 'cantidad' => 80, 'stock_minimo' => 10, 'created_at' => '2025-06-24 01:52:49', 'updated_at' => '2025-06-24 01:52:49'],
-            ['id' => 35, 'cantidad' => 8, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:52:53', 'updated_at' => '2025-06-24 01:52:53'],
-            ['id' => 37, 'cantidad' => 6, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:55:48', 'updated_at' => '2025-06-24 01:55:48'],
-            ['id' => 38, 'cantidad' => 8, 'stock_minimo' => 6, 'created_at' => '2025-06-24 01:57:58', 'updated_at' => '2025-06-24 01:57:58'],
-            ['id' => 39, 'cantidad' => 8, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:59:41', 'updated_at' => '2025-06-24 01:59:41'],
-            ['id' => 41, 'cantidad' => 7, 'stock_minimo' => 2, 'created_at' => '2025-06-24 02:02:46', 'updated_at' => '2025-06-24 02:02:46'],
-            ['id' => 42, 'cantidad' => 5, 'stock_minimo' => 2, 'created_at' => '2025-06-24 02:05:03', 'updated_at' => '2025-06-24 02:05:03'],
-            ['id' => 43, 'cantidad' => 20, 'stock_minimo' => 2, 'created_at' => '2025-06-24 02:09:20', 'updated_at' => '2025-06-24 02:09:20'],
-            ['id' => 44, 'cantidad' => 25, 'stock_minimo' => 2, 'created_at' => '2025-06-24 02:10:38', 'updated_at' => '2025-06-24 02:10:38'],
-            ['id' => 45, 'cantidad' => 20, 'stock_minimo' => 2, 'created_at' => '2025-06-24 02:12:58', 'updated_at' => '2025-06-24 02:12:58'],
-            ['id' => 46, 'cantidad' => 23, 'stock_minimo' => 2, 'created_at' => '2025-06-24 02:14:47', 'updated_at' => '2025-06-24 02:14:47'],
-            ['id' => 47, 'cantidad' => 12, 'stock_minimo' => 2, 'created_at' => '2025-06-24 03:17:05', 'updated_at' => '2025-06-24 03:17:05'],
-            ['id' => 48, 'cantidad' => 13, 'stock_minimo' => 2, 'created_at' => '2025-06-24 03:19:08', 'updated_at' => '2025-06-24 03:19:08'],
-            ['id' => 49, 'cantidad' => 50, 'stock_minimo' => 2, 'created_at' => '2025-06-24 03:21:30', 'updated_at' => '2025-06-24 03:21:30'],
-            ['id' => 50, 'cantidad' => 21, 'stock_minimo' => 2, 'created_at' => '2025-06-24 03:23:11', 'updated_at' => '2025-06-24 03:23:11'],
-            ['id' => 51, 'cantidad' => 23, 'stock_minimo' => 2, 'created_at' => '2025-06-24 03:25:12', 'updated_at' => '2025-06-24 03:25:12'],
-            ['id' => 52, 'cantidad' => 9, 'stock_minimo' => 2, 'created_at' => '2025-06-24 03:28:32', 'updated_at' => '2025-06-24 03:28:32'],
-            ['id' => 53, 'cantidad' => 10, 'stock_minimo' => 2, 'created_at' => '2025-06-24 03:32:30', 'updated_at' => '2025-06-24 03:32:30'],
-            ['id' => 54, 'cantidad' => 12, 'stock_minimo' => 2, 'created_at' => '2025-06-24 03:34:39', 'updated_at' => '2025-06-24 03:34:39'],
-            ['id' => 55, 'cantidad' => 10, 'stock_minimo' => 2, 'created_at' => '2025-06-24 03:37:09', 'updated_at' => '2025-06-24 03:37:09'],
-            ['id' => 56, 'cantidad' => 12, 'stock_minimo' => 2, 'created_at' => '2025-06-24 03:39:59', 'updated_at' => '2025-06-24 03:39:59']
+            ['id' => 24, 'cantidad' => 8, 'stock_minimo' => 2, 'created_at' => '2025-06-24 01:15:10', 'updated_at' => '2025-06-24 01:15:10']
         ];
 
         foreach ($stocks as $stock) {
             DB::table('stocks')->insert($stock);
         }
+    }
 
-        // 9. DELMES
+    private function insertDelmes()
+    {
         DB::table('delmes')->insert([
             [
                 'id' => 6,
@@ -261,25 +290,12 @@ class DatabaseSeeder extends Seeder
                 'destacado' => 1,
                 'created_at' => '2025-06-14 10:53:22',
                 'updated_at' => '2025-06-14 19:45:43'
-            ],
-            [
-                'id' => 7,
-                'nombre' => 'Venezuela',
-                'marca' => 'NOSE',
-                'descripcion' => 'asdsad',
-                'precio_original' => 21.00,
-                'precio_oferta' => 32.00,
-                'stock' => 55,
-                'categoria' => 'keratinas',
-                'imagen' => 'productos/i27a37SyDot1tJjsUCYI1AJpfZwydACuVv5vaAuM.jpg',
-                'activo' => 1,
-                'destacado' => 1,
-                'created_at' => '2025-06-14 19:46:28',
-                'updated_at' => '2025-06-14 19:46:28'
             ]
         ]);
+    }
 
-        // 10. PRODUCTOS
+    private function insertProductos()
+    {
         $productos = [
             [
                 'id' => 18,
@@ -316,72 +332,16 @@ class DatabaseSeeder extends Seeder
                 'tamano_id' => null,
                 'sabor_id' => null,
                 'objetivo_id' => null
-            ],
-            [
-                'id' => 20,
-                'nombre' => 'Creatina Ronnie Coleman 1kg',
-                'precio_nuevo' => 215.00,
-                'precio_antes' => 249.00,
-                'imagen' => '1750483974.png',
-                'descripcion' => 'Un suplemento rico',
-                'categoria_id' => 7,
-                'stock_id' => 21,
-                'marca_id' => 17,
-                'es_delmes' => 1,
-                'ventas_mes' => 0,
-                'created_at' => '2025-06-21 10:32:54',
-                'updated_at' => '2025-06-21 10:34:01',
-                'tamano_id' => null,
-                'sabor_id' => null,
-                'objetivo_id' => null
-            ],
-            [
-                'id' => 21,
-                'nombre' => 'MuscleTech Creatine Chews - Creapure Monohydrate Supplement for Muscle',
-                'precio_nuevo' => 149.00,
-                'precio_antes' => 209.00,
-                'imagen' => '1750484023.png',
-                'descripcion' => 'Suplemento rico',
-                'categoria_id' => 7,
-                'stock_id' => 22,
-                'marca_id' => 18,
-                'es_delmes' => 1,
-                'ventas_mes' => 0,
-                'created_at' => '2025-06-21 10:33:43',
-                'updated_at' => '2025-06-21 10:34:02',
-                'tamano_id' => null,
-                'sabor_id' => null,
-                'objetivo_id' => null
-            ],
-            [
-                'id' => 23,
-                'nombre' => 'Gold Standard Whey ON (5LB)',
-                'precio_nuevo' => 389.00,
-                'precio_antes' => 449.00,
-                'imagen' => '1750709710.png',
-                'descripcion' => 'Proteína Gold Standard Whey de 4.65lb a 5lb – Optimum Nutrition',
-                'categoria_id' => 13,
-                'stock_id' => 24,
-                'marca_id' => 11,
-                'es_delmes' => 0,
-                'ventas_mes' => 0,
-                'created_at' => '2025-06-24 01:15:10',
-                'updated_at' => '2025-06-24 01:15:10',
-                'tamano_id' => 2,
-                'sabor_id' => 2,
-                'objetivo_id' => 1
             ]
         ];
 
-        // Insertar productos en lotes para evitar problemas de memoria
         foreach ($productos as $producto) {
             DB::table('productos')->insert($producto);
         }
+    }
 
-        // Insertar más productos
-        $this->insertMoreProductos();
-
-        // 11. CUPONES
+    private function insertCupones()
+    {
         DB::table('cupones')->insert([
             [
                 'id' => 1,
@@ -396,85 +356,26 @@ class DatabaseSeeder extends Seeder
                 'user_id' => null,
                 'created_at' => '2025-06-28 21:41:17',
                 'updated_at' => '2025-06-29 21:24:17'
-            ],
-            [
-                'id' => 2,
-                'codigo' => 'TEC25',
-                'descuento' => 20.00,
-                'tipo_descuento' => 'porcentaje',
-                'stock' => 120,
-                'imagen' => null,
-                'precio_minimo' => 190.00,
-                'fecha_inicio' => '2025-06-26',
-                'fecha_fin' => '2025-06-28',
-                'user_id' => null,
-                'created_at' => '2025-06-28 23:00:47',
-                'updated_at' => '2025-06-28 23:00:47'
-            ],
-            [
-                'id' => 3,
-                'codigo' => 'TEC2024',
-                'descuento' => 50.00,
-                'tipo_descuento' => 'porcentaje',
-                'stock' => 190,
-                'imagen' => null,
-                'precio_minimo' => 150.00,
-                'fecha_inicio' => '2025-06-26',
-                'fecha_fin' => '2025-06-30',
-                'user_id' => null,
-                'created_at' => '2025-06-28 23:04:08',
-                'updated_at' => '2025-06-28 23:04:08'
-            ],
-            [
-                'id' => 4,
-                'codigo' => 'TEC',
-                'descuento' => 50.00,
-                'tipo_descuento' => 'porcentaje',
-                'stock' => 190,
-                'imagen' => null,
-                'precio_minimo' => 1.00,
-                'fecha_inicio' => '2025-06-26',
-                'fecha_fin' => '2025-06-30',
-                'user_id' => null,
-                'created_at' => '2025-06-28 23:07:32',
-                'updated_at' => '2025-06-28 23:07:32'
-            ],
-            [
-                'id' => 5,
-                'codigo' => 'BIENVEFIT',
-                'descuento' => 50.00,
-                'tipo_descuento' => 'porcentaje',
-                'stock' => 150,
-                'imagen' => 'imagenes/cupones/1751222342_Historia de Instagram evento de comics creativo divertido celeste y rojo.png',
-                'precio_minimo' => 120.00,
-                'fecha_inicio' => '2025-06-27',
-                'fecha_fin' => '2025-06-30',
-                'user_id' => null,
-                'created_at' => '2025-06-29 21:27:05',
-                'updated_at' => '2025-06-29 23:39:02'
             ]
         ]);
+    }
 
-        // 12. CARRITO_PRODUCTOS
+    private function insertCarritoProductos()
+    {
         DB::table('carrito_productos')->insert([
-            ['id' => 1, 'user_id' => 10, 'producto_id' => 18, 'cantidad' => 1, 'created_at' => '2025-06-24 00:46:37', 'updated_at' => '2025-06-24 00:46:37'],
-            ['id' => 3, 'user_id' => 11, 'producto_id' => 21, 'cantidad' => 1, 'created_at' => '2025-06-24 04:36:36', 'updated_at' => '2025-06-24 04:36:36'],
-            ['id' => 4, 'user_id' => 1, 'producto_id' => 20, 'cantidad' => 5, 'created_at' => '2025-06-24 08:48:58', 'updated_at' => '2025-06-27 08:57:14'],
-            ['id' => 5, 'user_id' => 1, 'producto_id' => 18, 'cantidad' => 2, 'created_at' => '2025-06-24 22:04:23', 'updated_at' => '2025-06-24 22:32:19'],
-            ['id' => 6, 'user_id' => 1, 'producto_id' => 21, 'cantidad' => 1, 'created_at' => '2025-06-24 22:26:35', 'updated_at' => '2025-06-24 22:26:35'],
-            ['id' => 7, 'user_id' => 13, 'producto_id' => 20, 'cantidad' => 2, 'created_at' => '2025-06-27 09:02:34', 'updated_at' => '2025-06-27 09:16:24'],
-            ['id' => 8, 'user_id' => 13, 'producto_id' => 21, 'cantidad' => 1, 'created_at' => '2025-06-28 21:49:52', 'updated_at' => '2025-06-28 21:49:52'],
-            ['id' => 9, 'user_id' => 13, 'producto_id' => 18, 'cantidad' => 1, 'created_at' => '2025-06-28 21:52:23', 'updated_at' => '2025-06-28 21:52:23']
+            ['id' => 1, 'user_id' => 10, 'producto_id' => 18, 'cantidad' => 1, 'created_at' => '2025-06-24 00:46:37', 'updated_at' => '2025-06-24 00:46:37']
         ]);
+    }
 
-        // 13. OPINIONS
+    private function insertOpinions()
+    {
         DB::table('opinions')->insert([
-            ['id' => 1, 'user_id' => 1, 'producto_id' => 18, 'valoracion' => 5, 'comentario' => 'Esta bonito', 'created_at' => '2025-06-23 03:40:39', 'updated_at' => '2025-06-23 03:40:39'],
-            ['id' => 2, 'user_id' => 1, 'producto_id' => 23, 'valoracion' => 5, 'comentario' => 'Muy buena', 'created_at' => '2025-06-24 03:12:13', 'updated_at' => '2025-06-24 03:12:13'],
-            ['id' => 3, 'user_id' => 1, 'producto_id' => 23, 'valoracion' => 1, 'comentario' => 'Muy mala', 'created_at' => '2025-06-24 03:12:25', 'updated_at' => '2025-06-24 03:12:25']
+            ['id' => 1, 'user_id' => 1, 'producto_id' => 18, 'valoracion' => 5, 'comentario' => 'Esta bonito', 'created_at' => '2025-06-23 03:40:39', 'updated_at' => '2025-06-23 03:40:39']
         ]);
+    }
 
-        // 14. RECLAMACIONES
+    private function insertReclamaciones()
+    {
         DB::table('reclamaciones')->insert([
             [
                 'id' => 1,
@@ -496,88 +397,23 @@ class DatabaseSeeder extends Seeder
                 'orden_id' => null,
                 'created_at' => '2025-06-23 00:50:57',
                 'updated_at' => '2025-06-23 00:50:57'
-            ],
-            [
-                'id' => 2,
-                'tipo_documento' => 'dni',
-                'numero_documento' => '60435585',
-                'telefono' => '917364262',
-                'nombres' => 'Rodolfo',
-                'apellidos' => 'Tavera Serrano',
-                'email' => 'rodolfoalejandrotaveraserrano@gmail.com',
-                'direccion' => 'Ancash 105',
-                'fecha_compra' => '2025-06-03',
-                'tipo_reclamo' => 'reclamo',
-                'producto' => 'Nosexd',
-                'detalle_reclamo' => 'No me llego',
-                'pedido_cliente' => 'Que me lo entreguen xd',
-                'estado' => 'pendiente',
-                'respuesta_empresa' => null,
-                'fecha_respuesta' => null,
-                'orden_id' => null,
-                'created_at' => '2025-06-23 00:52:34',
-                'updated_at' => '2025-06-23 00:52:34'
             ]
         ]);
+    }
 
-        // 15. VENTAS
+    private function insertVentas()
+    {
         DB::table('ventas')->insert([
-            ['id' => 9, 'producto_id' => 18, 'cantidad' => 1, 'precio_unitario' => 179.00, 'total' => 179.00, 'created_at' => '2025-06-23 05:00:44', 'updated_at' => '2025-06-23 05:00:44'],
-            ['id' => 10, 'producto_id' => 19, 'cantidad' => 1, 'precio_unitario' => 109.00, 'total' => 109.00, 'created_at' => '2025-06-23 12:14:07', 'updated_at' => '2025-06-23 12:14:07']
+            ['id' => 9, 'producto_id' => 18, 'cantidad' => 1, 'precio_unitario' => 179.00, 'total' => 179.00, 'created_at' => '2025-06-23 05:00:44', 'updated_at' => '2025-06-23 05:00:44']
         ]);
+    }
 
-        // 16. PASSWORD RESET TOKENS
+    private function insertPasswordResetTokens()
+    {
         DB::table('password_reset_tokens')->insert([
             'email' => 'rodolfo.tavera@tecsup.edu.pe',
             'token' => '$2y$12$LhFAjt/KPiXxq3hXBC8WvOfY10H56S3tt3iJhZ5ujj8D/L9k3JPom',
             'created_at' => '2025-06-23 23:15:06'
         ]);
-
-        // 17. SESSIONS
-        DB::table('sessions')->insert([
-            [
-                'id' => 'FPp2IEGiv1WreqCe6o5gxC5OCM4uLpELnivtOHxq',
-                'user_id' => null,
-                'ip_address' => '127.0.0.1',
-                'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
-                'payload' => 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiMmp0VHloUUJRM3MxSmVrR1FrQVhLZ3U3clUwNExMY295TFludkRJZiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wcm9kdWN0cyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=',
-                'last_activity' => 1751314095
-            ]
-        ]);
-
-        // Rehabilitar restricciones de claves foráneas
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $this->command->info('✅ Base de datos poblada exitosamente con todos los datos!');
-    }
-
-    private function insertMoreProductos()
-    {
-        // Resto de productos - dividido en función separada por límite de respuesta
-        $moreProductos = [
-            [
-                'id' => 24,
-                'nombre' => 'Carnivor Protein 4.5lbs',
-                'precio_nuevo' => 299.00,
-                'precio_antes' => 349.00,
-                'imagen' => '1750709908.png',
-                'descripcion' => 'Ayuda a definir musculo, perfecto para personas que quieran definir-Sabor a vainilla',
-                'categoria_id' => 13,
-                'stock_id' => 25,
-                'marca_id' => 15,
-                'es_delmes' => 0,
-                'ventas_mes' => 0,
-                'created_at' => '2025-06-24 01:18:28',
-                'updated_at' => '2025-06-24 01:18:28',
-                'tamano_id' => null,
-                'sabor_id' => 1,
-                'objetivo_id' => 3
-            ],
-            // Agregar más productos aquí si es necesario...
-        ];
-
-        foreach ($moreProductos as $producto) {
-            DB::table('productos')->insert($producto);
-        }
     }
 }
