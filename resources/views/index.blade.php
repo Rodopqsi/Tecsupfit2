@@ -170,7 +170,7 @@
 
     <div class="tabs">
         <a
-            href="{{ route('home') }}"
+            href="{{ route('/') }}"
             class="category-btn {{ !request('categoria') ? 'active' : '' }}"
         >
             TODOS
