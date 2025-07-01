@@ -161,77 +161,115 @@
           </div>
         @endif
 
-
-
         <div class="flex justify-between">
           <span>Subtotal</span>
           <span>S/ {{ number_format($total, 2) }}</span>
         </div>
 
+        <!-- Radios de envío con valores numéricos -->
         <div class="mt-2">
           <p class="font-bold">Envío</p>
-          <label><input type="radio" name="envio" checked> Olva (S/15.00)</label><br>
-          <label><input type="radio" name="envio"> Shalom (Pago en destino)</label>
+          <label><input type="radio" name="envio" value="15" checked> Olva (S/15.00)</label><br>
+          <label><input type="radio" name="envio" value="0"> Retiro en tienda</label>
         </div>
 
+        <!-- Total a pagar visual y oculto -->
         <div class="flex justify-between border-t pt-2 mt-2">
           <span class="font-bold text-lg">Total a pagar</span>
-          <span class="text-red-600 font-bold text-lg">S/ {{ number_format($totalConDescuento, 2) }}</span>
+          <span id="total-a-pagar" class="text-red-600 font-bold text-lg">
+            S/ {{ number_format($totalConDescuento + 15, 2) }}
+          </span>
         </div>
+
+        <!-- Input oculto con total base -->
+        <input type="hidden" id="total-base" value="{{ $totalConDescuento }}">
+
       @endif
-    </div>
+
 
     <!-- PayPal Button -->
    <!-- PayPal Button -->
 <div class="mt-6" id="paypal-button-container"></div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const radios = document.querySelectorAll('input[name="envio"]');
+    const totalSpan = document.getElementById('total-a-pagar');
+    const totalBase = parseFloat(document.getElementById('total-base').value);
 
-<script src="https://www.paypal.com/sdk/js?client-id=AUBcJCnp5qlm26Nx4UMFg5b_iGTKLHRcOdYVyEf485Gs0r4p91bFecfuOWdNur02cXi2HHXaN4OAAHAL&currency=USD"></script>
+    function actualizarTotal() {
+      const envio = parseFloat(document.querySelector('input[name="envio"]:checked').value);
+      const total = totalBase + envio;
+      totalSpan.textContent = S/ ${total.toFixed(2)};
+    }
+
+    radios.forEach(radio => {
+      radio.addEventListener('change', actualizarTotal);
+    });
+
+    actualizarTotal(); // Ejecutar al cargar
+  });
+</script>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AUBcJCnp5qlm26Nx4UMFg5b_iGTKLHRcOdYVyEf485Gs0r4p91bFecfuOWdNur02cXi2HHXaN4OAAHAL&currency=USD&components=buttons,funding-eligibility"></script>
+
 <script>
 paypal.Buttons({
-  createOrder: function(data, actions) {
-    return actions.order.create({
-      purchase_units: [{
-        amount: {
-          value: "{{ number_format($totalConDescuento, 2, '.', '') }}"
-        }
-      }]
-    });
+  
+  funding: {
+    allowed: [paypal.FUNDING.PAYPAL, paypal.FUNDING.CARD]
   },
+  createOrder: function(data, actions) {
+  const totalBase = parseFloat(document.getElementById('total-base').value);
+  const envio = parseFloat(document.querySelector('input[name="envio"]:checked').value);
+  const total = (totalBase + envio).toFixed(2);
+
+  return actions.order.create({
+    purchase_units: [{
+      amount: {
+        value: total
+      }
+    }]
+  });
+},
+
   onApprove: function(data, actions) {
     return actions.order.capture().then(function(details) {
       const form = document.getElementById('formulario-pago');
       const formData = new FormData(form);
 
+      // Adjunta el ID de la orden de PayPal al formData
+      formData.append('paypal_order_id', details.id);
+
       fetch("{{ route('procesar.pago') }}", {
         method: "POST",
         headers: {
-          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          'Accept': 'application/json'
         },
         body: formData
       })
       .then(response => response.json())
       .then(data => {
-  if (data.success && data.redirect_url) {
-    window.location.href = data.redirect_url;
-  } else {
-    alert(data.message || "Ocurrió un error al procesar el pedido.");
-  }
-})
-.catch(error => {
-  console.error("Error al procesar el pago:", error);
-  alert("Ocurrió un error al guardar el pedido.");
-});
-
+        if (data.success && data.redirect_url) {
+          window.location.href = data.redirect_url;
+        } else {
+          alert(data.message || "Ocurrió un error al procesar el pedido.");
+        }
+      })
+      .catch(error => {
+        alert("Ocurrió un error al guardar el pedido.");
+      });
     });
   }
 }).render('#paypal-button-container');
 </script>
 
+
   </div>
 </div>
 
 <footer class="mt-12">
-  @include('components.footer')
+@include('components.footer')
 </footer>
 
 </body>

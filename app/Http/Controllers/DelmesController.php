@@ -22,7 +22,7 @@ class DelMesController extends Controller
         // Si el usuario busca algo, filtramos por nombre o descripción
         if ($request->filled('search')) {
             $query->where('nombre', 'like', '%' . $request->search . '%')
-                  ->orWhere('descripcion', 'like', '%' . $request->search . '%');
+                ->orWhere('descripcion', 'like', '%' . $request->search . '%');
         }
 
         // Filtramos por categoría si el usuario seleccionó una
